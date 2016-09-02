@@ -1,7 +1,8 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const Post = require('../models/post');
+const router = express.Router();
 
-router.get('/', function(req, res, next) {
+router.get('/', (req, res) => {
   res.redirect('/posts');
 });
 

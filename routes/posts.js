@@ -21,6 +21,17 @@ router.get('/', (req, res) => {
   });
 });
 
+router.get('/tags', (req, res) => {
+  Post.find().distinct('tags', (err, tags) => {
+    if (err) {
+      console.log(err);
+      throw err;
+    } else {
+      res.json({tags: tags});
+    }
+  });
+});
+
 router.get('/tags/:tag', (req, res) => {
   Post.find({tags: {$in: [req.params.tag]}}, (err, posts) => {
     if (err) {
@@ -46,21 +57,24 @@ router.post('/', authMiddleware, (req, res) => {
 });
 
 router.put('/:id', authMiddleware, (req, res) => {
-  Post.findById(req.params.id, (err, post) => {
-    if (err) {
-      res.sendStatus(404);
-    } else {
-      res.json(post.toObject());
-    }
-  });
+  Post.findByIdAndUpdate(
+    req.params.id,
+    {$set: req.body},
+    {new:true},
+    (err, post) => {
+      if (err) {
+        res.sendStatus(404);
+      } else {
+        res.json(post.toObject());
+      }
+    });
 });
 
 router.delete('/:id', authMiddleware, (req, res) => {
-  Post.findById(req.params.id, (err, post) => {
+  Post.findByIdAndRemove(req.params.id, (err, post) => {
     if (err) {
       res.sendStatus(404);
     } else {
-      post.remove();
       res.sendStatus(200);
     }
   });

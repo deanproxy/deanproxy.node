@@ -72,6 +72,23 @@ describe('Post', () => {
         }
         expect(res).to.have.status(200);
         expect(res).to.be.html;
+        const $ = cheerio.load(res.text);
+        expect($(`#${id}`).find('header h2').text()).to.equal('meow');
+        expect($(`#${id}`).find('section p').text()).to.equal('test');
+        done();
+      });
+  });
+
+  it('should give me a list of distinct tags', done => {
+    chai.request(server).get('/posts/tags')
+      .end((err, res) => {
+        if (err) {
+          console.log(err);
+        }
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body.tags[0]).to.equal('fan');
+        expect(res.body.tags[1]).to.equal('meow');
         done();
       });
   });
@@ -87,6 +104,5 @@ describe('Post', () => {
         done();
       });
   });
-
 
 });
