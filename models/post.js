@@ -8,6 +8,7 @@ const PostSchema = new Schema({
   htmlContent: String,
   createdAt: { type: Date, default: Date.now },
   tags: [{ type: String }],
+  commentsDisabled: { type: Boolean, default: true },
   comments: [{ type: String }]
 });
 

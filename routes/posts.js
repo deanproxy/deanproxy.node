@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Post = require('../models/post');
+const marked = require('marked');
 
 function authMiddleware(req, res, next) {
   if (req.isAuthenticated()) {
@@ -33,6 +34,7 @@ router.get('/tags/:tag', (req, res) => {
 
 router.post('/', authMiddleware, (req, res) => {
   const post = new Post(req.body);
+  post.htmlContent = marked(post.content);
   post.save(err => {
     if (err) {
       console.log(err);
