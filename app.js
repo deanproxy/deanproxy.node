@@ -5,12 +5,37 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var passport = require('passport');
+var authConfig = require('./config/auth');
+var GithubStrategy = require('passport-github').Strategy;
+var session = require('express-session');
 
 var routes = require('./routes/index');
 var posts = require('./routes/posts');
 
 var app = express();
 
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+passport.deserializeUser(function(user, done) {
+  done(null, user);
+});
+
+var github = authConfig.github.prod;
+if (app.get('env') === 'development' && authConfig.github.dev) {
+  github = authConfig.github.dev;
+}
+if (app.get('env') === 'test' && authConfig.github.test) {
+  github = authConfig.github.test;
+}
+passport.use(new GithubStrategy(github,
+  function(request, accessToken, refreshToken, profile, done) {
+    return done(null, profile);
+  }
+));
+
+mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost/deanproxy');
 
 // view engine setup
@@ -24,6 +49,34 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(session({
+  secret: 'wat-secret-store',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 7*24*60*60*1000 }
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.get('/auth/github',
+  passport.authenticate('github', {scope: ['profile']}));
+
+app.get('/auth/github/callback',
+  passport.authenticate('github', {
+    failureRedirect: '/login'
+  }),
+  function(req, res) {
+    console.log(`${req.user.id} has tried to login.`);
+    if (req.user.id !== github.userId) {
+      console.log(`${req.user.id} !== ${github.userId}`);
+      req.logout();
+      res.redirect('/login');
+    } else {
+      res.redirect('/');
+    }
+  });
 
 app.use('/', routes);
 app.use('/posts', posts);

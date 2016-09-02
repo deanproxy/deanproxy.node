@@ -20,6 +20,8 @@ describe('Post', () => {
     chai.request(server).get('/posts')
       .end((err, res) => {
         expect(res).to.have.status(200);
+        expect(res).to.be.html;
+        const $ = cheerio.load(res.body);
         done();
       });
   });
@@ -51,13 +53,25 @@ describe('Post', () => {
 
   it('should let me edit a post on /posts/:id', done => {
     chai.request(server).put(`/posts/${id}`)
-      .send({'title': 'meow'})
+      .send({'title': 'meow', 'tags':['meow', 'fan']})
       .end((err, res) => {
         if (err) {
           console.log(err.response.text);
         }
         expect(res).to.have.status(200);
         expect(res).to.be.json;
+        done();
+      });
+  });
+
+  it('should let me get all posts by tag on /posts/tags/:tag', done => {
+    chai.request(server).get('/posts/tags/meow')
+      .end((err, res) => {
+        if (err) {
+          console.log(err.response.text);
+        }
+        expect(res).to.have.status(200);
+        expect(res).to.be.html;
         done();
       });
   });
@@ -73,5 +87,6 @@ describe('Post', () => {
         done();
       });
   });
+
 
 });
