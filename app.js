@@ -74,7 +74,7 @@ app.get('/auth/github/callback',
       req.logout();
       res.redirect('/login');
     } else {
-      res.redirect('/');
+      res.redirect('/#/admin');
     }
   });
 

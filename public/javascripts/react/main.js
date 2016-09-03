@@ -10,6 +10,7 @@ import About from './about';
 import Index from './index';
 import Music from './music';
 import Contact from './contact';
+import Admin from './admin';
 
 render((
   <Router history={hashHistory}>

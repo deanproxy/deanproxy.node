@@ -22,7 +22,9 @@ class Layout extends React.Component {
             </ul>
           </div>
         </nav>
-        {this.props.children}
+        <div className="main-content">
+          {this.props.children}
+        </div>
       </div>
     );
   }

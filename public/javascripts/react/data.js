@@ -20,10 +20,10 @@ class ApiClass {
       path: type,
       method: 'get'
     }).then(response => {
-      this._notify(type, response);
+      this._notify(type, response.entity);
     }, response => {
-      console.log(response);
-      alert(response);
+      console.log(`Server response for ${type}: ${response.status.text}`);
+      alert(`${type}: ${response.status.text}`);
     });
   }
 
@@ -41,7 +41,7 @@ class ApiClass {
       method: method,
       entity: object
     }).then(response => {
-      this._notify(type, response);
+      this._notify(type, response.entity);
     }, response => {
       console.log(response.status.text);
       alert(response.status.text);
@@ -50,11 +50,12 @@ class ApiClass {
 
 }
 
-const ObjectTypes = {
+const ApiTypes = {
   ALL_POSTS: '/posts',
   SINGLE_POST: '/posts/:id',
-  ALL_TAGS: '/tags'
+  ALL_TAGS: '/tags',
+  USER: '/admin/user'
 }
 
 const ApiHandler = new ApiClass();
-export {ObjectTypes, ApiHandler};
+export {ApiTypes, ApiHandler};

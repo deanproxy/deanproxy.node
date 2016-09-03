@@ -44725,6 +44725,145 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _data = require('./data');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Admin = function (_React$Component) {
+  _inherits(Admin, _React$Component);
+
+  function Admin() {
+    _classCallCheck(this, Admin);
+
+    var _this = _possibleConstructorReturn(this, (Admin.__proto__ || Object.getPrototypeOf(Admin)).call(this));
+
+    _this.state = {
+      user: {
+        isLoggedIn: false
+      },
+      posts: []
+    };
+    return _this;
+  }
+
+  _createClass(Admin, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      _data.ApiHandler.watch(_data.ApiTypes.USER, function (response) {
+        _this2.state.user.isLoggedIn = response.user.isLoggedIn;
+
+        _this2.setState({
+          user: _this2.state.user
+        });
+
+        if (!_this2.state.user.isLoggedIn) {
+          window.location = '/#/login';
+        }
+      });
+
+      _data.ApiHandler.watch(_data.ApiTypes.ALL_POSTS, function (response) {
+        _this2.setState({
+          posts: response.posts
+        });
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this3 = this;
+
+      if (!this.state.user.isLoggedIn) {
+        return _react2.default.createElement(
+          'h1',
+          null,
+          'Oops... you\'re not logged in.'
+        );
+      }
+
+      var posts = [];
+
+      if (this.state.posts.length) {
+        posts = this.state.posts.map(function (post) {
+          return _react2.default.createElement(
+            'article',
+            { key: post._id },
+            _react2.default.createElement(
+              'header',
+              null,
+              _react2.default.createElement(
+                'h2',
+                null,
+                post.title
+              )
+            ),
+            _react2.default.createElement('section', { dangerouslySetInnerHTML: { __html: post.htmlContent } }),
+            _react2.default.createElement(
+              'footer',
+              null,
+              _react2.default.createElement(
+                'button',
+                { className: 'btn btn-default', onClick: _this3.edit, 'data-post-id': post._id },
+                'edit'
+              ),
+              _react2.default.createElement(
+                'button',
+                { className: 'btn btn-danger', onClick: _this3.delete, 'data-post-id': post._id },
+                'delete'
+              )
+            )
+          );
+        });
+      } else {
+        posts = _react2.default.createElement(
+          'h2',
+          null,
+          'No posts... Make one!'
+        );
+      }
+
+      return _react2.default.createElement(
+        'div',
+        { className: 'admin' },
+        _react2.default.createElement(
+          'div',
+          null,
+          _react2.default.createElement(
+            'button',
+            { className: 'btn btn-primary' },
+            'Add New Post'
+          )
+        ),
+        posts
+      );
+    }
+  }]);
+
+  return Admin;
+}(_react2.default.Component);
+
+exports.default = Admin;
+
+},{"./data":265,"react":233}],263:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -44758,7 +44897,7 @@ var Code = function (_React$Component) {
 
 exports.default = Code;
 
-},{"react":233}],263:[function(require,module,exports){
+},{"react":233}],264:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -44804,13 +44943,13 @@ var Contact = function (_React$Component) {
 
 exports.default = Contact;
 
-},{"react":233}],264:[function(require,module,exports){
+},{"react":233}],265:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ApiHandler = exports.ObjectTypes = undefined;
+exports.ApiHandler = exports.ApiTypes = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -44856,10 +44995,10 @@ var ApiClass = function () {
         path: type,
         method: 'get'
       }).then(function (response) {
-        _this._notify(type, response);
+        _this._notify(type, response.entity);
       }, function (response) {
-        console.log(response);
-        alert(response);
+        console.log('Server response for ' + type + ': ' + response.status.text);
+        alert(type + ': ' + response.status.text);
       });
     }
   }, {
@@ -44881,7 +45020,7 @@ var ApiClass = function () {
         method: method,
         entity: object
       }).then(function (response) {
-        _this2._notify(type, response);
+        _this2._notify(type, response.entity);
       }, function (response) {
         console.log(response.status.text);
         alert(response.status.text);
@@ -44892,17 +45031,18 @@ var ApiClass = function () {
   return ApiClass;
 }();
 
-var ObjectTypes = {
+var ApiTypes = {
   ALL_POSTS: '/posts',
   SINGLE_POST: '/posts/:id',
-  ALL_TAGS: '/tags'
+  ALL_TAGS: '/tags',
+  USER: '/admin/user'
 };
 
 var ApiHandler = new ApiClass();
-exports.ObjectTypes = ObjectTypes;
+exports.ApiTypes = ApiTypes;
 exports.ApiHandler = ApiHandler;
 
-},{"lodash":48,"rest":235,"rest/interceptor/errorCode":240,"rest/interceptor/mime":241}],265:[function(require,module,exports){
+},{"lodash":48,"rest":235,"rest/interceptor/errorCode":240,"rest/interceptor/mime":241}],266:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -44944,7 +45084,7 @@ var Index = function (_React$Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
-      _data.ApiHandler.watch(_data.ObjectTypes.ALL_POSTS, function (response) {
+      _data.ApiHandler.watch(_data.ApiTypes.ALL_POSTS, function (response) {
         _this2.setState(response);
       });
     }
@@ -44992,7 +45132,7 @@ var Index = function (_React$Component) {
 
 exports.default = Index;
 
-},{"./data":264,"react":233}],266:[function(require,module,exports){
+},{"./data":265,"react":233}],267:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45096,7 +45236,11 @@ var Layout = function (_React$Component) {
             )
           )
         ),
-        this.props.children
+        _react2.default.createElement(
+          'div',
+          { className: 'main-content' },
+          this.props.children
+        )
       );
     }
   }]);
@@ -45106,8 +45250,8 @@ var Layout = function (_React$Component) {
 
 exports.default = Layout;
 
-},{"react":233,"react-router":81}],267:[function(require,module,exports){
-'use strict';
+},{"react":233,"react-router":81}],268:[function(require,module,exports){
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -45115,7 +45259,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = require('react');
+var _react = require("react");
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -45137,12 +45281,22 @@ var Login = function (_React$Component) {
   }
 
   _createClass(Login, [{
-    key: 'render',
+    key: "render",
     value: function render() {
       return _react2.default.createElement(
-        'h1',
-        null,
-        'Login'
+        "div",
+        { className: "login" },
+        _react2.default.createElement(
+          "h1",
+          null,
+          "Login"
+        ),
+        _react2.default.createElement(
+          "a",
+          { href: "/auth/github", className: "btn btn-block btn-social btn-github" },
+          _react2.default.createElement("span", { className: "fa fa-github" }),
+          "login with github"
+        )
       );
     }
   }]);
@@ -45152,7 +45306,7 @@ var Login = function (_React$Component) {
 
 exports.default = Login;
 
-},{"react":233}],268:[function(require,module,exports){
+},{"react":233}],269:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -45195,6 +45349,10 @@ var _contact = require('./contact');
 
 var _contact2 = _interopRequireDefault(_contact);
 
+var _admin = require('./admin');
+
+var _admin2 = _interopRequireDefault(_admin);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 (0, _reactDom.render)(_react2.default.createElement(
@@ -45209,13 +45367,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
     _react2.default.createElement(_reactRouter.Route, { path: 'code', component: _code2.default }),
     _react2.default.createElement(_reactRouter.Route, { path: 'about', component: _about2.default }),
     _react2.default.createElement(_reactRouter.Route, { path: 'music', component: _music2.default }),
-    _react2.default.createElement(_reactRouter.Route, { path: 'admin', component: Admin }),
+    _react2.default.createElement(_reactRouter.Route, { path: 'admin', component: _admin2.default }),
     _react2.default.createElement(_reactRouter.Route, { path: 'posts/:id', component: _post2.default }),
     _react2.default.createElement(_reactRouter.Route, { path: 'tags/:tag', component: _index2.default })
   )
 ), document.getElementById('react-content'));
 
-},{"./about":261,"./code":262,"./contact":263,"./index":265,"./layout":266,"./login":267,"./music":269,"./post":270,"react":233,"react-dom":51,"react-router":81}],269:[function(require,module,exports){
+},{"./about":261,"./admin":262,"./code":263,"./contact":264,"./index":266,"./layout":267,"./login":268,"./music":270,"./post":271,"react":233,"react-dom":51,"react-router":81}],270:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45261,7 +45419,7 @@ var Music = function (_React$Component) {
 
 exports.default = Music;
 
-},{"react":233}],270:[function(require,module,exports){
+},{"react":233}],271:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45307,7 +45465,7 @@ var Post = function (_React$Component) {
 
 exports.default = Post;
 
-},{"react":233}]},{},[261,262,263,264,265,266,267,268,269,270])
+},{"react":233}]},{},[261,262,263,264,265,266,267,268,269,270,271])
 
 
 //# sourceMappingURL=bundle.js.map

@@ -109,4 +109,19 @@ describe('Post', () => {
       });
   });
 
+  it('should return a user object on /admin/user', done => {
+    authenticated = false;
+    chai.request(server).get('/admin/user')
+      .end((err, res) => {
+        if (err) {
+          console.log(err);
+        }
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body).to.have.property('user');
+        expect(res.body.user).to.be.a('object');
+        done();
+      });
+  });
+
 });

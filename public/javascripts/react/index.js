@@ -1,5 +1,5 @@
 import React from 'react';
-import {ApiHandler, ObjectTypes} from './data';
+import {ApiHandler, ApiTypes} from './data';
 
 class Index extends React.Component {
   constructor() {
@@ -10,7 +10,7 @@ class Index extends React.Component {
   }
 
   componentDidMount() {
-    ApiHandler.watch(ObjectTypes.ALL_POSTS, response => {
+    ApiHandler.watch(ApiTypes.ALL_POSTS, response => {
       this.setState(response);
     });
   }

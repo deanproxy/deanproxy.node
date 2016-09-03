@@ -14,5 +14,18 @@ router.get('/logout', (req, res) => {
   res.redirect('/posts');
 });
 
+router.get('/admin/user', (req, res) => {
+  const user = {
+    isLoggedIn: false,
+    id: 0
+  }
+  
+  if (req.isAuthenticated()) {
+    user.id = req.user.id;
+    user.isLoggedIn = true;
+  }
+  res.json({user: user});
+});
+
 
 module.exports = router;

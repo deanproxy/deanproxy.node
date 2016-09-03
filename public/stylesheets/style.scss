@@ -11,6 +11,18 @@ $main-color: #29abe0;
   }
 }
 
-.posts-index {
-  padding: 0 20px;
+.main-content {
+  padding: 20px;
+}
+
+.login {
+  max-width: 400px;
+  .btn {
+    font-size: 1.2em;
+    padding: 10px 12px 10px 46px;
+  }
+  .btn-social > :first-child {
+    line-height: 44px;
+    width: 38px;
+  }
 }
