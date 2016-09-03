@@ -3,7 +3,7 @@ const Post = require('../models/post');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  res.redirect('/posts');
+  res.render('index');
 });
 
 router.get('/login', (req, res) => {

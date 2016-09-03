@@ -1,11 +1,5 @@
 extends layout
 
 block content
-  if tag
-    h1 Showing posts for tag `#{tag}`
+  div(id='react-content')
     
-  each post in posts
-    article(id= "#{post._id}")
-      header
-        h2 #{post.title}
-      section !{post.htmlContent}

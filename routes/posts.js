@@ -16,7 +16,7 @@ router.get('/', (req, res) => {
       console.log(err);
       throw err;
     } else {
-      res.render('index', {posts: posts});
+      res.json({posts: posts});
     }
   });
 });
@@ -38,7 +38,7 @@ router.get('/tags/:tag', (req, res) => {
       console.log(err);
       throw err;
     } else {
-      res.render('index', {tag: req.params.tag, posts: posts});
+      res.json({tag: req.params.tag, posts: posts});
     }
   });
 });
@@ -51,7 +51,7 @@ router.post('/', authMiddleware, (req, res) => {
       console.log(err);
       throw err;
     } else {
-      res.json(post.toObject());
+      res.json({post: post.toObject()});
     }
   });
 });
@@ -65,7 +65,7 @@ router.put('/:id', authMiddleware, (req, res) => {
       if (err) {
         res.sendStatus(404);
       } else {
-        res.json(post.toObject());
+        res.json({post: post.toObject()});
       }
     });
 });

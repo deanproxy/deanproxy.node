@@ -1,6 +1,5 @@
 const chai = require('chai');
 const http = require('chai-http');
-const cheerio = require('cheerio');
 const expect = chai.expect;
 
 process.env.NODE_ENV = 'test';
@@ -20,8 +19,8 @@ describe('Post', () => {
     chai.request(server).get('/posts')
       .end((err, res) => {
         expect(res).to.have.status(200);
-        expect(res).to.be.html;
-        const $ = cheerio.load(res.body);
+        expect(res).to.be.json;
+        expect(res.body.posts).to.be.a('array');
         done();
       });
   });
@@ -46,7 +45,9 @@ describe('Post', () => {
         }
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        id = res.body._id;
+        expect(res.body).to.have.property('post');
+        expect(res.body.post).to.be.a('object');
+        id = res.body.post._id;
         done();
       });
   });
@@ -60,21 +61,24 @@ describe('Post', () => {
         }
         expect(res).to.have.status(200);
         expect(res).to.be.json;
+        expect(res.body).to.have.property('post');
+        expect(res.body.post).to.be.a('object');
         done();
       });
   });
-
   it('should let me get all posts by tag on /posts/tags/:tag', done => {
+
     chai.request(server).get('/posts/tags/meow')
       .end((err, res) => {
         if (err) {
           console.log(err.response.text);
         }
         expect(res).to.have.status(200);
-        expect(res).to.be.html;
-        const $ = cheerio.load(res.text);
-        expect($(`#${id}`).find('header h2').text()).to.equal('meow');
-        expect($(`#${id}`).find('section p').text()).to.equal('test');
+        expect(res).to.be.json;
+        expect(res.body).to.have.property('posts');
+        expect(res.body).to.have.property('tag');
+        expect(res.body.posts).to.be.a('array');
+        expect(res.body.tag).to.be.a('string');
         done();
       });
   });

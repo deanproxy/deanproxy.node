@@ -1,8 +1,10 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
+.nav {
+  text-transform: lowercase;
+  font-size: 1.1em; }
+  .nav .navbar-header a {
+    font-size: 1.3em; }
+  .nav .navbar-header a em {
+    color: #29abe0; }
 
-a {
-  color: #00B7FF;
-}
+.posts-index {
+  padding: 0 20px; }

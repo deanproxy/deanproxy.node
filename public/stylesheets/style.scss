@@ -1,0 +1,16 @@
+$main-color: #29abe0;
+
+.nav {
+  text-transform: lowercase;
+  font-size: 1.1em;
+  .navbar-header a {
+    font-size: 1.3em;
+  }
+  .navbar-header a em {
+    color: $main-color;
+  }
+}
+
+.posts-index {
+  padding: 0 20px;
+}
