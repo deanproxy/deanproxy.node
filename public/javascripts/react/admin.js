@@ -25,11 +25,23 @@ class Admin extends React.Component {
       }
     });
 
-    ApiHandler.watch(ApiTypes.ALL_POSTS, response => {
+    ApiHandler.watch(ApiTypes.ALL_POSTS, {limit:5}, response => {
       this.setState({
         posts: response.posts
       });
     });
+  }
+
+  edit(evt) {
+
+  }
+
+  delete(evt) {
+
+  }
+
+  search(evt) {
+
   }
 
   render() {
@@ -45,12 +57,16 @@ class Admin extends React.Component {
           <article key={post._id}>
             <header>
               <h2>{post.title}</h2>
+              <div className="actions">
+                <a href className="" onClick={this.edit} data-post-id={post._id}>
+                  <span className="fa fa-edit"></span>
+                </a>
+                <a href className="danger" onClick={this.delete} data-post-id={post._id}>
+                  <span className="fa fa-remove"></span>
+                </a>
+              </div>
             </header>
             <section dangerouslySetInnerHTML={{__html: post.htmlContent}} />
-            <footer>
-              <button className="btn btn-default" onClick={this.edit} data-post-id={post._id}>edit</button>
-              <button className="btn btn-danger" onClick={this.delete} data-post-id={post._id}>delete</button>
-            </footer>
           </article>
         );
       });
@@ -60,8 +76,12 @@ class Admin extends React.Component {
 
     return (
       <div className="admin">
-        <div>
+        <div className="actions">
           <button className="btn btn-primary">Add New Post</button>
+          <div className="search">
+            <input type="text" name="search" onChange={this.search} placeholder="Search"/>
+            <span className="fa fa-search"></span>
+          </div>
         </div>
         {posts}
       </div>

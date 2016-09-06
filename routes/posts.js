@@ -11,7 +11,11 @@ function authMiddleware(req, res, next) {
 }
 
 router.get('/', (req, res) => {
-  Post.find({}, (err, posts) => {
+  let q = Post.find({});
+  if (req.query.limit) {
+    q = q.limit(req.query.limit);
+  }
+  q.exec((err, posts) => {
     if (err) {
       console.log(err);
       throw err;

@@ -1,4 +1,21 @@
 $main-color: #29abe0;
+$danger-color: #d9534f;
+
+input, textarea {
+  font-size: 1.4em;
+  padding: 10px;
+  border: 1px solid #999;
+  &:focus {
+    border: 1px solid #666;
+  }
+}
+.danger {
+  color: $danger-color;
+}
+
+section {
+  font-size: 1.5em;
+}
 
 .nav {
   text-transform: lowercase;
@@ -24,5 +41,63 @@ $main-color: #29abe0;
   .btn-social > :first-child {
     line-height: 44px;
     width: 38px;
+  }
+}
+
+.search {
+  position: relative;
+  display: inline-block;
+  input {
+    font-size: 1.4em;
+    padding: 5px;
+  }
+  span {
+    position: absolute;
+    font-size: 1.4em;
+    right: 8px;
+    top: 10px;
+    color: #aaa;
+  }
+}
+
+.admin {
+  .actions {
+    .search {
+      float: right;
+      margin-top: 8px;
+    }
+    .search:after {
+      content: " ";
+      display: block;
+      clear: both;
+    }
+  }
+
+  article {
+    display: block;
+    border: 1px solid #999;
+    padding: 5px 5px 5px 10px;
+    margin: 10px 0;
+    height: 100px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    header {
+      display: block;
+      h2 {
+        display: inline-block;
+        width: 50%;
+        margin-top: 0;
+      }
+      .actions {
+        display: inline-block;
+        width: 50%;
+        text-align: right;
+        a {
+          font-size: 1.5em;
+          padding: 8px;
+        }
+      }
+    }
   }
 }
