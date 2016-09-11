@@ -72,9 +72,11 @@ router.get('/:id', (req, res) => {
 });
 
 router.put('/:id', authMiddleware, (req, res) => {
+  const post = req.body;
+  post.htmlContent = marked(post.content);
   Post.findByIdAndUpdate(
     req.params.id,
-    {$set: req.body},
+    {$set: post},
     {new:true},
     (err, post) => {
       if (err) {

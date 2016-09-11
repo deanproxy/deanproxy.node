@@ -11,6 +11,7 @@ import Index from './index';
 import Music from './music';
 import Contact from './contact';
 import Admin from './admin';
+import Edit from './edit';
 
 render((
   <Router history={hashHistory}>
@@ -22,6 +23,8 @@ render((
       <Route path="about" component={About}/>
       <Route path="music" component={Music}/>
       <Route path="admin" component={Admin}/>
+      <Route path="admin/new" component={Edit}/>
+      <Route path="admin/edit/:id" component={Edit}/>
       <Route path="posts/:id" component={Post}/>
       <Route path="tags/:tag" component={Index}/>
     </Route>

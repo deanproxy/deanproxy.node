@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import {ApiTypes, ApiHandler} from './data';
 import Modal from './modal';
 import Bootstrap from 'bootstrap.native';
+import marked from 'marked';
+import {Link} from 'react-router';
 
 class Admin extends React.Component {
   constructor() {
@@ -11,17 +13,9 @@ class Admin extends React.Component {
       user: {
         isLoggedIn: false
       },
-      posts: [],
-      post: {
-        title: '',
-        content: '',
-        disableComments: true
-      }
+      posts: []
     }
 
-    this.save = this.save.bind(this);
-    this.change = this.change.bind(this);
-    this.edit = this.edit.bind(this);
     this.delete = this.delete.bind(this);
   }
 
@@ -43,49 +37,6 @@ class Admin extends React.Component {
         posts: response.posts
       });
     });
-  }
-
-  change(evt) {
-    const post = this.state.post;
-    post[evt.target.name] = evt.target.value;
-    this.setState({post: post});
-  }
-
-  save(evt) {
-    let apiType = ApiTypes.ALL_POSTS;
-    let method  = 'post';
-    if (this.state.post._id) {
-      apiType = ApiTypes.SINGLE_POST.replace(':id', this.state.post._id);
-      method = 'put';
-    }
-
-    ApiHandler.submit(apiType, method, this.state.post);
-    this.modal.close();
-  }
-
-  edit(evt) {
-    evt.preventDefault();
-
-    const id = evt.target.dataset.postId;
-    if (id) {
-      const api = ApiTypes.SINGLE_POST.replace(':id', id);
-      ApiHandler.watch(api, res => {
-        this.setState({post: res.post});
-      });
-    } else {
-      this.setState({
-        post: {
-          _id: '',
-          title: '',
-          content: '',
-          disableComments: true
-        }
-      });
-    }
-
-    const div = document.getElementById('modal');
-    this.modal = new Bootstrap.Modal(div);
-    this.modal.open();
   }
 
   delete(evt) {
@@ -113,8 +64,8 @@ class Admin extends React.Component {
             <header>
               <h2>{post.title}</h2>
               <div className="actions">
-                <a href onClick={this.edit}>
-                  <span className="fa fa-edit" data-post-id={post._id}></span>
+                <a href={'/#/admin/edit/' + post._id}>
+                  <span className="fa fa-edit"></span>
                 </a>
                 <a href className="danger" onClick={this.delete}>
                   <span className="fa fa-remove" data-post-id={post._id}></span>
@@ -131,30 +82,8 @@ class Admin extends React.Component {
 
     return (
       <div className="admin">
-        <div id="modal" className="modal fade">
-          <Modal save={this.save}>
-            <form>
-              <input type="hidden" name="_id" defaultValue={this.state.post._id}/>
-              <ul>
-                <li>
-                  <input type="text" name="title" onChange={this.change}
-                    value={this.state.post.title} placeholder="Title" required/>
-                </li>
-                <li>
-                  <textarea name="content" onChange={this.change}
-                    value={this.state.post.content} placeholder="Content" required></textarea>
-                </li>
-                <li>
-                  <label>Disabled Comments</label>
-                  <input type="checkbox" name="disableComments" onChange={this.change}
-                    checked={this.state.post.disableComments}/>
-                </li>
-              </ul>
-            </form>
-          </Modal>
-        </div>
         <div className="actions">
-          <button className="btn btn-primary" onClick={this.edit}>Add New Post</button>
+          <Link to="admin/new" className="btn btn-primary">Add New Post</Link>
           <div className="search">
             <input type="text" name="search" onChange={this.search} placeholder="Search"/>
             <span className="fa fa-search"></span>
