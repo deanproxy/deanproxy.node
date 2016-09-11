@@ -11,14 +11,14 @@ function authMiddleware(req, res, next) {
 }
 
 router.get('/', (req, res) => {
-  let q = Post.find({});
+  let q = Post.find({}, null, {sort: {'createdAt':-1}});
   if (req.query.limit) {
     q = q.limit(req.query.limit);
   }
   q.exec((err, posts) => {
     if (err) {
       console.log(err);
-      throw err;
+      res.sendStatus(500);
     } else {
       res.json({posts: posts});
     }
@@ -29,7 +29,7 @@ router.get('/tags', (req, res) => {
   Post.find().distinct('tags', (err, tags) => {
     if (err) {
       console.log(err);
-      throw err;
+      res.sendStatus(500);
     } else {
       res.json({tags: tags});
     }
@@ -40,7 +40,7 @@ router.get('/tags/:tag', (req, res) => {
   Post.find({tags: {$in: [req.params.tag]}}, (err, posts) => {
     if (err) {
       console.log(err);
-      throw err;
+      res.sendStatus(500);
     } else {
       res.json({tag: req.params.tag, posts: posts});
     }
@@ -53,7 +53,18 @@ router.post('/', authMiddleware, (req, res) => {
   post.save(err => {
     if (err) {
       console.log(err);
-      throw err;
+      res.sendStatus(500);
+    } else {
+      res.json({post: post.toObject()});
+    }
+  });
+});
+
+router.get('/:id', (req, res) => {
+  Post.findById(req.params.id, (err, post) => {
+    if (err) {
+      console.log(err);
+      res.sendStatus(404);
     } else {
       res.json({post: post.toObject()});
     }

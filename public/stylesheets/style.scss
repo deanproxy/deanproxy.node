@@ -5,10 +5,15 @@ input, textarea {
   font-size: 1.4em;
   padding: 10px;
   border: 1px solid #999;
+  width: 100%;
   &:focus {
     border: 1px solid #666;
   }
+  &[type=radio],&[type=checkbox] {
+    width: inherit;
+  }
 }
+
 .danger {
   color: $danger-color;
 }
@@ -96,6 +101,24 @@ section {
         a {
           font-size: 1.5em;
           padding: 8px;
+        }
+      }
+    }
+  }
+}
+
+.admin {
+  .modal {
+    form {
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        li {
+          padding-bottom: 20px;
+          textarea {
+            height: 300px;
+          }
         }
       }
     }

@@ -66,6 +66,21 @@ describe('Post', () => {
         done();
       });
   });
+
+  it('should let me get a post on /posts/:id', done => {
+    chai.request(server).get(`/posts/${id}`)
+      .end((err, res) => {
+        if (err) {
+          console.log(err.response.text);
+        }
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body).to.have.property('post');
+        expect(res.body.post).to.be.a('object');
+        done();
+      });
+  });
+
   it('should let me get all posts by tag on /posts/tags/:tag', done => {
 
     chai.request(server).get('/posts/tags/meow')
