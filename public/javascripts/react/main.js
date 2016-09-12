@@ -4,29 +4,33 @@ import {Router, IndexRoute, Route, hashHistory} from 'react-router';
 
 import Layout from './layout';
 import Login from './login';
-import Post from './post';
 import Code from './code';
 import About from './about';
-import Index from './index';
 import Music from './music';
 import Contact from './contact';
-import Admin from './admin';
+import Show from './show';
+
+import AdminIndex from './admin-index';
+import AdminLayout from './admin-layout';
 import Edit from './edit';
 
 render((
   <Router history={hashHistory}>
     <Route path="/" component={Layout}>
-      <IndexRoute component={Index}/>
+      <IndexRoute component={Show}/>
       <Route path="login" component={Login}/>
       <Route path="contact" component={Contact}/>
       <Route path="code" component={Code}/>
       <Route path="about" component={About}/>
       <Route path="music" component={Music}/>
-      <Route path="admin" component={Admin}/>
-      <Route path="admin/new" component={Edit}/>
-      <Route path="admin/edit/:id" component={Edit}/>
-      <Route path="posts/:id" component={Post}/>
-      <Route path="tags/:tag" component={Index}/>
+      <Route path="posts/:id" component={Show}/>
+      <Route path="tags/:tag" component={Show}/>
+    </Route>
+
+    <Route path="/admin" component={AdminLayout}>
+      <IndexRoute component={AdminIndex}/>
+      <Route path="new" component={Edit}/>
+      <Route path="edit/:id" component={Edit}/>
     </Route>
   </Router>
 ), document.getElementById('react-content'));

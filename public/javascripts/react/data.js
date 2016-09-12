@@ -25,6 +25,14 @@ class ApiClass {
     return serialized;
   }
 
+  unwatch(type, callback) {
+    this.apis.forEach((a,i) => {
+      if (a.type === type && a.callback === callback) {
+        this.apis.splice(i, 1);
+      }
+    });
+  }
+
   watch(type, params, callback) {
     /* params is an optional field. so if it's a function, make it the callback. */
     if (typeof params === 'function') {
@@ -76,6 +84,7 @@ class ApiClass {
 
 const ApiTypes = {
   ALL_POSTS: '/posts',
+  LATEST_POST: '/posts/latest',
   SINGLE_POST: '/posts/:id',
   ALL_TAGS: '/tags',
   USER: '/admin/user'

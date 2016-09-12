@@ -3,6 +3,10 @@ import {Link} from 'react-router';
 
 class Layout extends React.Component {
   render() {
+    let logoutLink = '';
+    if (this.props.loggedIn) {
+      logoutLink = <li><a href='/logout'>logout</a></li>;
+    }
     return (
       <div className="layout">
         <nav className="nav navbar-default">
@@ -19,6 +23,7 @@ class Layout extends React.Component {
               <li><Link to="music">music</Link></li>
               <li><Link to="about">about</Link></li>
               <li><Link to="contact">contact</Link></li>
+              {logoutLink}
             </ul>
           </div>
         </nav>

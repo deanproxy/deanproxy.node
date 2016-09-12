@@ -6,37 +6,29 @@ import Bootstrap from 'bootstrap.native';
 import marked from 'marked';
 import {Link} from 'react-router';
 
-class Admin extends React.Component {
+class AdminIndex extends React.Component {
   constructor() {
     super();
     this.state = {
-      user: {
-        isLoggedIn: false
-      },
       posts: []
     }
 
     this.delete = this.delete.bind(this);
+    this._callback = this._callback.bind(this);
+  }
+
+  _callback(response) {
+    this.setState({
+      posts: response.posts
+    });
+  }
+
+  componentWillUnmount() {
+    ApiHandler.unwatch(ApiTypes.ALL_POSTS, this._callback);
   }
 
   componentDidMount() {
-    ApiHandler.watch(ApiTypes.USER, response => {
-      this.state.user.isLoggedIn = response.user.isLoggedIn;
-
-      this.setState({
-        user: this.state.user
-      });
-
-      if (!this.state.user.isLoggedIn) {
-        window.location = '/#/login';
-      }
-    });
-
-    ApiHandler.watch(ApiTypes.ALL_POSTS, {limit:5}, response => {
-      this.setState({
-        posts: response.posts
-      });
-    });
+    ApiHandler.watch(ApiTypes.ALL_POSTS, {limit:5}, this._callback);
   }
 
   delete(evt) {
@@ -51,13 +43,9 @@ class Admin extends React.Component {
   }
 
   render() {
-    if (!this.state.user.isLoggedIn) {
-      return <h1>Oops... you're not logged in.</h1>;
-    }
-
     let posts = [];
 
-    if (this.state.posts.length) {
+    if (this.state.posts && this.state.posts.length) {
       posts = this.state.posts.map(post => {
         return (
           <article key={post._id}>
@@ -95,4 +83,4 @@ class Admin extends React.Component {
   }
 }
 
-export default Admin;
+export default AdminIndex;

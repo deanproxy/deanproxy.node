@@ -20,6 +20,12 @@ class Edit extends React.Component {
     this.change = this.change.bind(this);
   }
 
+  componentWillUnmount() {
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
+  }
+
   change(evt) {
     const post = this.state.post;
     post[evt.target.name] = evt.target.value;
@@ -33,6 +39,9 @@ class Edit extends React.Component {
     if (this.state.post._id) {
       apiType = ApiTypes.SINGLE_POST.replace(':id', this.state.post._id);
       method = 'put';
+    } else {
+      /* if this is a new post, we don't want to submit the _id attribute */
+      delete this.state.post._id;
     }
 
     ApiHandler.submit(apiType, method, this.state.post);
@@ -48,7 +57,6 @@ class Edit extends React.Component {
 
   componentDidMount() {
     const id = this.props.params.id;
-    console.log(`ID is ${id}`);
     if (id) {
       const api = ApiTypes.SINGLE_POST.replace(':id', id);
       ApiHandler.watch(api, res => {

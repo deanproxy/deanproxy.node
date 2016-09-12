@@ -10,8 +10,8 @@ router.get('/login', (req, res) => {
   res.render('login');
 });
 router.get('/logout', (req, res) => {
-  res.logout();
-  res.redirect('/posts');
+  req.logout();
+  res.redirect('/');
 });
 
 router.get('/admin/user', (req, res) => {
@@ -19,7 +19,7 @@ router.get('/admin/user', (req, res) => {
     isLoggedIn: false,
     id: 0
   }
-  
+
   if (req.isAuthenticated()) {
     user.id = req.user.id;
     user.isLoggedIn = true;

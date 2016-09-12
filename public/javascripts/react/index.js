@@ -1,38 +1,44 @@
 import React from 'react';
 import {ApiHandler, ApiTypes} from './data';
+import {Link} from 'react-router';
+import Post from './post';
 
 class Index extends React.Component {
   constructor() {
     super();
     this.state = {
-      posts: [ ]
+      post: {
+        _id: '',
+        title: '',
+        htmlContent: '',
+        createdAt: new Date(),
+        disableComments: true,
+        next: {
+          _id: ''
+        },
+        previous: {
+          _id: ''
+        }
+      }
     }
+
+    this._callback = this._callback.bind(this);
+  }
+
+  _callback(response) {
+    this.setState(response);
+  }
+
+  componentWillUnmount() {
+    ApiHandler.unwatch(ApiTypes.LATEST_POST, this._callback);
   }
 
   componentDidMount() {
-    ApiHandler.watch(ApiTypes.ALL_POSTS, response => {
-      this.setState(response);
-    });
+    ApiHandler.watch(ApiTypes.LATEST_POST, this._callback);
   }
 
   render() {
-    let articles = <h2>Sorry, no posts yet...</h2>;
-    if (this.state.posts.length > 0) {
-      const articles = this.state.posts.map(post => {
-        return (
-          <article key={post._id} id={post._id}>
-            <header><h2>{post.title}</h2></header>
-            <section>{post.htmlContent}</section>
-          </article>
-        );
-      });
-    }
-
-    return(
-      <div className="posts-index">
-        {articles}
-      </div>
-    )
+    return <Post post={this.state.post}/>;
   }
 }
 

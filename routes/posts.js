@@ -1,7 +1,9 @@
 const express = require('express');
-const router = express.Router();
 const Post = require('../models/post');
 const marked = require('marked');
+const parallel = require('async/parallel');
+
+const router = express.Router();
 
 function authMiddleware(req, res, next) {
   if (req.isAuthenticated()) {
@@ -60,13 +62,58 @@ router.post('/', authMiddleware, (req, res) => {
   });
 });
 
+router.get('/latest', (req, res) => {
+  Post.findOne({}, null, {sort: {'createdAt':-1}}, (err, post) => {
+    if (err) {
+      console.log(err);
+      res.sendStatus(500);
+      return;
+    }
+    Post.findOne({'createdAt': { $lt: post.createdAt }}, '_id', {sort: {createdAt:-1}},
+      (err, response) => {
+        if (err) {
+          console.log(err);
+          res.sendStatus(500);
+        }
+        const p = post.toObject();
+        if (response) {
+          p.previous = response;
+        }
+        res.json({post: p});
+      });
+  });
+});
+
 router.get('/:id', (req, res) => {
   Post.findById(req.params.id, (err, post) => {
     if (err) {
       console.log(err);
       res.sendStatus(404);
     } else {
-      res.json({post: post.toObject()});
+      /* get the previous and next posts */
+      const p = post.toObject();
+      parallel([
+        function(callback) {
+          Post.findOne({'createdAt': { $gt: post.createdAt }}, '_id', {sort: {createdAt:-1}},
+          (err, response) => {
+            if (response) {
+              p.next = response;
+            }
+            callback(null, response);
+          });
+        },
+        function(callback) {
+          Post.findOne({'createdAt': { $lt: post.createdAt }}, '_id', {sort: {createdAt: -1}},
+            (err, response) => {
+              if (response) {
+                p.previous = response;
+              }
+              callback(null, response);
+          });
+        }
+      ], function(err, results) {
+        res.json({post: p});
+      });
     }
   });
 });
