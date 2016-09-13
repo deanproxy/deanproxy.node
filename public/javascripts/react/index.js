@@ -14,20 +14,19 @@ class Index extends React.Component {
       }
     }
 
-    this.limit = 2;
+    this.limit = 5;
     this._callback = this._callback.bind(this);
   }
 
   _callback(response) {
     this.setState(response);
-    ApiHandler.unwatch(this.api, this._callback);
+    ApiHandler.unwatch(ApiTypes.ALL_POSTS, this._callback);
   }
 
   _getData(query) {
     this.skip = query.skip || 0;
 
-    this.api = `${ApiTypes.ALL_POSTS}?limit=${this.limit}&skip=${this.skip}`;
-    ApiHandler.watch(this.api, this._callback);
+    ApiHandler.watch(ApiTypes.ALL_POSTS, {limit:this.limit, skip:this.skip}, this._callback);
   }
 
   componentWillReceiveProps(props) {

@@ -1,8 +1,16 @@
 import React from 'react';
 import {Link} from 'react-router';
 import moment from 'moment';
+import marked from 'marked';
 
 class Post extends React.Component {
+  _makeUrlFromTitle(title) {
+    if (!title) {
+      return title;
+    }
+    return title.replace(/[^A-Za-z0-9-]/g, '-').toLowerCase();
+  }
+
   render() {
     let tags='';
     const post = this.props.post;
@@ -21,23 +29,27 @@ class Post extends React.Component {
     }
 
     let footer = '';
+    const currentTitle = this._makeUrlFromTitle(post.title);
     if (this.props.summarize) {
-        const firstParagraph = post.htmlContent.match('<p>(.*)</p>');
+        const firstParagraph = post.htmlContent.match(/(.*)/);
         if (firstParagraph) {
-          post.htmlContent = firstParagraph[0] + ` <a href="/#/posts/${post._id}">more...</a>`;
+          post.content = firstParagraph[0] +
+            ` [[more...]](/#/posts/${post._id}/${currentTitle})`;
         }
     } else {
       let prev='', next='';
       if (post.previous) {
+        const prevTitle = this._makeUrlFromTitle(post.previous.title);
         prev =
-          <Link className="previous-link" to={'/posts/' + post.previous._id}>
+          <Link className="previous-link" to={`/posts/${post.previous._id}/${prevTitle}`}>
             <span className="fa fa-hand-o-left"></span>
             {post.previous.title}
           </Link>;
       }
       if (this.props.post.next) {
+      const nextTitle = this._makeUrlFromTitle(post.next.title);
         next =
-          <Link className="next-link" to={'/posts/' + post.next._id}>
+          <Link className="next-link" to={`/posts/${post.next._id}/${nextTitle}`}>
             {post.next.title}
             <span className="fa fa-hand-o-right"></span>
           </Link>;
@@ -51,11 +63,11 @@ class Post extends React.Component {
       <div className="post">
         <article id={post._id}>
           <header>
-            <h1><Link to={`/posts/${post._id}`}>{post.title}</Link></h1>
-            <time dateTime={createdAt}>{createdAtEnglish}</time>
-            <div className="tags">{tags}</div>
+            <h1><Link to={`/posts/${post._id}/${currentTitle}`}>{post.title}</Link></h1>
+            <time dateTime={createdAt}><span className="fa fa-calendar"></span> {createdAtEnglish}</time>
+            <div className="tags"><span className="fa fa-tag"></span> {tags}</div>
           </header>
-          <section dangerouslySetInnerHTML={{__html: post.htmlContent}}/>
+          <section dangerouslySetInnerHTML={{__html: marked(post.content)}}/>
           {footer}
         </article>
       </div>

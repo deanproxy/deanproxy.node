@@ -60,7 +60,6 @@ router.get('/tags/:tag', (req, res) => {
 
 router.post('/', authMiddleware, (req, res) => {
   const post = new Post(req.body);
-  post.htmlContent = marked(post.content);
   post.save(err => {
     if (err) {
       console.log(err);
@@ -130,7 +129,6 @@ router.get('/:id', (req, res) => {
 
 router.put('/:id', authMiddleware, (req, res) => {
   const post = req.body;
-  post.htmlContent = marked(post.content);
   Post.findByIdAndUpdate(
     req.params.id,
     {$set: post},

@@ -19,7 +19,7 @@ class AdminIndex extends React.Component {
 
   _callback(response) {
     this.setState({
-      posts: response.posts
+      posts: response.posts.posts
     });
   }
 
@@ -47,6 +47,7 @@ class AdminIndex extends React.Component {
 
     if (this.state.posts && this.state.posts.length) {
       posts = this.state.posts.map(post => {
+        const content = post.content.match(/(.*)/);
         return (
           <article key={post._id}>
             <header>
@@ -60,7 +61,7 @@ class AdminIndex extends React.Component {
                 </a>
               </div>
             </header>
-            <section dangerouslySetInnerHTML={{__html: post.htmlContent}} />
+            <section>{content}</section>
           </article>
         );
       });
