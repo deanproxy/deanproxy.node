@@ -17,12 +17,21 @@ router.get('/', (req, res) => {
   if (req.query.limit) {
     q = q.limit(req.query.limit);
   }
+  if (req.query.skip) {
+    q = q.skip(req.query.skip);
+  }
   q.exec((err, posts) => {
     if (err) {
       console.log(err);
       res.sendStatus(500);
     } else {
-      res.json({posts: posts});
+      Post.count((err, count) => {
+        const obj = {
+          total: count,
+          posts: posts
+        }
+        res.json({posts: obj});
+      })
     }
   });
 });
@@ -69,7 +78,7 @@ router.get('/latest', (req, res) => {
       res.sendStatus(500);
       return;
     }
-    Post.findOne({'createdAt': { $lt: post.createdAt }}, '_id', {sort: {createdAt:-1}},
+    Post.findOne({'createdAt': { $lt: post.createdAt }}, 'title', {sort: {createdAt:-1}},
       (err, response) => {
         if (err) {
           console.log(err);
@@ -94,16 +103,17 @@ router.get('/:id', (req, res) => {
       const p = post.toObject();
       parallel([
         function(callback) {
-          Post.findOne({'createdAt': { $gt: post.createdAt }}, '_id', {sort: {createdAt:-1}},
+          /* how can we get the next post? currently we are always getting the first post */
+          Post.find({createdAt: { $gt: post.createdAt }}, 'title', {sort: {createdAt:-1}},
           (err, response) => {
             if (response) {
-              p.next = response;
+              p.next = response[response.length-1];
             }
             callback(null, response);
           });
         },
         function(callback) {
-          Post.findOne({'createdAt': { $lt: post.createdAt }}, '_id', {sort: {createdAt: -1}},
+          Post.findOne({createdAt: { $lt: post.createdAt }}, 'title', {sort: {createdAt:-1}},
             (err, response) => {
               if (response) {
                 p.previous = response;

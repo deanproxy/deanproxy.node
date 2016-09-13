@@ -9,6 +9,7 @@ import About from './about';
 import Music from './music';
 import Contact from './contact';
 import Show from './show';
+import Index from './index';
 
 import AdminIndex from './admin-index';
 import AdminLayout from './admin-layout';
@@ -17,7 +18,7 @@ import Edit from './edit';
 render((
   <Router history={hashHistory}>
     <Route path="/" component={Layout}>
-      <IndexRoute component={Show}/>
+      <IndexRoute component={Index}/>
       <Route path="login" component={Login}/>
       <Route path="contact" component={Contact}/>
       <Route path="code" component={Code}/>

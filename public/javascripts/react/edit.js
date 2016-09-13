@@ -11,7 +11,8 @@ class Edit extends React.Component {
         _id: '',
         title: '',
         content: '',
-        disableComments: true
+        disableComments: true,
+        tags: []
       }
     }
 
@@ -28,7 +29,11 @@ class Edit extends React.Component {
 
   change(evt) {
     const post = this.state.post;
-    post[evt.target.name] = evt.target.value;
+    if (evt.target.name === 'tags') {
+      post[evt.target.name] = evt.target.value.split(',').map(tag => tag.trim());
+    } else {
+      post[evt.target.name] = evt.target.value;
+    }
     this.setState({post: post});
   }
 
@@ -73,6 +78,7 @@ class Edit extends React.Component {
   }
 
   render() {
+    const tags = this.state.post.tags.join(',');
     return (
       <div className="edit">
         <form>
@@ -85,6 +91,10 @@ class Edit extends React.Component {
             <li>
               <textarea name="content" onChange={this.change} id="content"
                 value={this.state.post.content} placeholder="Content" required></textarea>
+            </li>
+            <li>
+              <input type="text" name="tags" onChange={this.change}
+                value={tags} placeholder="place,tags,here" required/>
             </li>
             <li>
               <label>Disabled Comments</label>

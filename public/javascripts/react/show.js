@@ -50,7 +50,8 @@ class Show extends React.Component {
   }
 
   componentDidMount() {
-    this._watch();
+    const id = this.props.params.id;
+    this._watch(id);
   }
 
   render() {
