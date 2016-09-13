@@ -128,7 +128,22 @@ section {
   }
 }
 
+.paginate {
+  font-size: 1.3em;
+  .previous {
+    font-size: 1.2em;
+    display: inline-block;
+    margin-right: 7px;
+  }
+  .next {
+    font-size: 1.2em;
+    display: inline-block;
+    margin-left: 7px;
+  }
+}
+
 .post {
+  margin-bottom: 20px;
   header {
     h1 {
       margin: 0;

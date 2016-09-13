@@ -51,7 +51,7 @@ class Post extends React.Component {
       <div className="post">
         <article id={post._id}>
           <header>
-            <h1>{post.title}</h1>
+            <h1><Link to={`/posts/${post._id}`}>{post.title}</Link></h1>
             <time dateTime={createdAt}>{createdAtEnglish}</time>
             <div className="tags">{tags}</div>
           </header>
