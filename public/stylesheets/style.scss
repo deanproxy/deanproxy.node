@@ -1,6 +1,13 @@
 $main-color: #29abe0;
 $danger-color: #d9534f;
 
+a {
+  color: #0078e1;
+  &:hover {
+    color: #0078e1;
+  }
+}
+
 input, textarea {
   font-size: 1.4em;
   padding: 10px;
@@ -192,6 +199,22 @@ section {
       p {
         display: inline-block;
       }
+    }
+  }
+}
+
+.code {
+  article header h3 {
+    margin-bottom: 0;
+  }
+  .github {
+    color: #e08a3e;
+    margin-bottom: 10px;
+    .message {
+      font-weight: 500;
+    }
+    .author {
+      font-style: italic;
     }
   }
 }
