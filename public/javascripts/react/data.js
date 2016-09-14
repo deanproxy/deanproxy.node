@@ -80,6 +80,20 @@ class ApiClass {
     });
   }
 
+  post(type, object) {
+    return new Promise((resolve, reject) => {
+      this.rest({
+        path: type,
+        method: 'post',
+        entity: object
+      }).then(response => {
+        resolve(response.entity);
+      }, response => {
+        reject(response);
+      });
+    });
+  }
+
 }
 
 const ApiTypes = {
@@ -87,7 +101,8 @@ const ApiTypes = {
   LATEST_POST: '/posts/latest',
   SINGLE_POST: '/posts/:id',
   ALL_TAGS: '/tags',
-  USER: '/admin/user'
+  USER: '/admin/user',
+  EMAIL: '/message'
 }
 
 const ApiHandler = new ApiClass();

@@ -10,7 +10,7 @@ class Show extends React.Component {
       post: {
         _id: '',
         title: '',
-        htmlContent: '',
+        content: '',
         createdAt: new Date(),
         disableComments: true,
         previous: {

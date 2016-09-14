@@ -1,9 +1,10 @@
 const express = require('express');
 const Post = require('../models/post');
 const router = express.Router();
+const nodemailer = require('nodemailer');
 
 router.get('/', (req, res) => {
-  res.render('index');
+  res.render('index.html');
 });
 
 router.get('/login', (req, res) => {
@@ -12,6 +13,24 @@ router.get('/login', (req, res) => {
 router.get('/logout', (req, res) => {
   req.logout();
   res.redirect('/');
+});
+
+router.post('/email', (req, res) => {
+  const message = {
+    to: 'dean@deanproxy.com',
+    from: req.body.email,
+    text: req.body.message,
+    subject: '[deanproxy] message'
+  }
+
+  const transporter = nodemailer.createTransport('smtp://localhost');
+  transporter.sendMail(message, (err, info) => {
+    if (err) {
+      res.sendStatus(500);
+      return;
+    }
+    res.sendStatus(200);
+  });
 });
 
 router.get('/admin/user', (req, res) => {

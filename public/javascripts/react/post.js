@@ -65,9 +65,9 @@ class Post extends React.Component {
           <header>
             <h1><Link to={`/posts/${post._id}/${currentTitle}`}>{post.title}</Link></h1>
             <time dateTime={createdAt}><span className="fa fa-calendar"></span> {createdAtEnglish}</time>
-            <div className="tags"><span className="fa fa-tag"></span> {tags}</div>
           </header>
           <section dangerouslySetInnerHTML={{__html: marked(post.content)}}/>
+          <div className="tags"><span className="fa fa-tag"></span> {tags}</div>
           {footer}
         </article>
       </div>

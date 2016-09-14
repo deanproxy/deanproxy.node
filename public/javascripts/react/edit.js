@@ -81,7 +81,7 @@ class Edit extends React.Component {
     const tags = this.state.post.tags.join(',');
     return (
       <div className="edit">
-        <form>
+        <form onSubmit={this.save}>
           <input type="hidden" name="_id" defaultValue={this.state.post._id}/>
           <ul>
             <li>
@@ -106,7 +106,7 @@ class Edit extends React.Component {
             </li>
             <li>
               <button className="btn btn-default" onClick={this.cancel}>Cancel</button>
-              <button className="btn btn-primary" onClick={this.save}>Save</button>
+              <button className="btn btn-primary">Save</button>
             </li>
           </ul>
         </form>
