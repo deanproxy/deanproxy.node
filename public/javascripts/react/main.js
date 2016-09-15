@@ -25,7 +25,7 @@ render((
       <Route path="about" component={About}/>
       <Route path="music" component={Music}/>
       <Route path="posts/:id/:name" component={Show}/>
-      <Route path="tags/:tag" component={Show}/>
+      <Route path="tags/:tag" component={Index}/>
     </Route>
 
     <Route path="/admin" component={AdminLayout}>

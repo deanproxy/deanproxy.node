@@ -13,27 +13,55 @@ function authMiddleware(req, res, next) {
   res.redirect(401, '/login');
 }
 
+function queryPosts(options) {
+  let q = undefined;
+  options = options || {};
+
+  return new Promise((resolve, reject) => {
+    if (!options.query) {
+      q = Post.find({}, null, {sort: {createdAt:-1}});
+    } else {
+      q = Post.find(options.query, null, {sort: {createdAt:-1}});
+    }
+
+    if (options.limit) {
+      q = q.limit(options.limit);
+    }
+    if (options.skip) {
+      q = q.skip(options.skip);
+    }
+
+    q.exec((err, posts) => {
+      if (err) {
+        reject(err);
+      } else {
+        Post.count(options.query, (err, count) => {
+          const obj = {
+            total: count,
+            posts: posts
+          }
+          resolve(obj);
+        })
+      }
+    });
+  });
+}
+
 router.get('/', (req, res) => {
-  let q = Post.find({}, null, {sort: {'createdAt':-1}});
+  var options = { };
+
   if (req.query.limit) {
-    q = q.limit(req.query.limit);
+    options.limit = req.query.limit;
   }
   if (req.query.skip) {
-    q = q.skip(req.query.skip);
+    options.skip = req.query.skip;
   }
-  q.exec((err, posts) => {
-    if (err) {
-      console.log(err);
-      res.sendStatus(500);
-    } else {
-      Post.count((err, count) => {
-        const obj = {
-          total: count,
-          posts: posts
-        }
-        res.json({posts: obj});
-      })
-    }
+
+  queryPosts(options).then(response => {
+    res.json({posts: response});
+  }).catch(response => {
+    console.log(response);
+    res.sendStatus(500);
   });
 });
 
@@ -49,14 +77,25 @@ router.get('/tags', (req, res) => {
 });
 
 router.get('/tags/:tag', (req, res) => {
-  Post.find({tags: {$in: [req.params.tag]}}, (err, posts) => {
-    if (err) {
-      console.log(err);
-      res.sendStatus(500);
-    } else {
-      res.json({tag: req.params.tag, posts: posts});
+  const options = {
+    query: {
+      tags: {$in: [req.params.tag]}
     }
-  });
+  };
+
+  if (req.query.limit) {
+    options.limit = req.query.limit;
+  }
+  if (req.query.skip) {
+    options.skip = req.query.skip;
+  }
+
+  queryPosts(options).then(response => {
+    res.json({tag: req.params.tag, posts: response});
+  }).catch(response => {
+    console.log(response);
+    res.sendStatus(500);
+  })
 });
 
 router.post('/', authMiddleware, (req, res) => {

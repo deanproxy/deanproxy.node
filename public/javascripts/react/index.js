@@ -20,31 +20,38 @@ class Index extends React.Component {
 
   _callback(response) {
     this.setState(response);
-    ApiHandler.unwatch(ApiTypes.ALL_POSTS, this._callback);
+    ApiHandler.unwatch(this.api, this._callback);
   }
 
-  _getData(query) {
-    this.skip = query.skip || 0;
-
-    ApiHandler.watch(ApiTypes.ALL_POSTS, {limit:this.limit, skip:this.skip}, this._callback);
+  _getData(props) {
+    this.skip = props.location.query.skip || 0;
+    this.api = ApiTypes.ALL_POSTS;
+    if (props.params.tag) {
+      this.api = ApiTypes.POSTS_BY_TAG.replace(':tag', props.params.tag);
+    }
+    ApiHandler.watch(this.api, {limit:this.limit, skip:this.skip}, this._callback);
   }
 
   componentWillReceiveProps(props) {
-    this._getData(props.location.query);
+    this._getData(props);
   }
 
   componentDidMount() {
-    this._getData(this.props.location.query);
+    this._getData(this.props);
   }
 
   render() {
+    let url = '/';
+    if (this.props.params.tag) {
+      url = `/tags/${this.props.params.tag}`;
+    }
     const posts = this.state.posts.posts.map(post => {
       return <Post key={post._id} post={post} summarize="true"/>;
     });
     return (
       <div className="index">
         {posts}
-        <Paginate url="/" limit={this.limit} skip={this.skip} total={this.state.posts.total}/>
+        <Paginate url={url} limit={this.limit} skip={this.skip} total={this.state.posts.total}/>
       </div>
     );
   }
