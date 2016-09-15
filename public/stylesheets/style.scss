@@ -207,6 +207,12 @@ section {
       span {
         float: left;
       }
+      span.link-text {
+        width: 90%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
     }
     .previous-link {
       float: left;
@@ -218,12 +224,6 @@ section {
         margin-right: 10px;
         font-size: 1.1em;
       }
-      span.link-text {
-        width: 90%;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-      }
     }
     .next-link {
       float: right;
@@ -231,12 +231,6 @@ section {
       span.fa {
         margin-left: 10px;
         font-size: 1.1em;
-      }
-      span.link-text {
-        width: 90%;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
       }
     }
     &:after {
@@ -303,6 +297,9 @@ section {
 @media(max-width:768px) {
   .main-content{
     margin: 0;
+  }
+  .post footer a span.link-text {
+    width: 80%;
   }
 }
 
