@@ -8,7 +8,6 @@ const PostSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
   tags: [{ type: String }],
   commentsDisabled: { type: Boolean, default: true },
-  comments: [{ type: String }]
 });
 
 const Post = mongoose.model('Post', PostSchema);

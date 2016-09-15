@@ -23,7 +23,6 @@ class Code extends React.Component {
     this.state.repos.forEach((repo,idx) => {
       const api = this.api.replace('%s', repo.name);
       this.rest(api).then(response => {
-        console.log(response);
         const recent = response.entity[0].commit;
         this.state.repos[idx].message = recent.message;
         this.state.repos[idx].date = recent.committer.date;
