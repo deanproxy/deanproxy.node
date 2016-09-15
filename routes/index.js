@@ -26,6 +26,7 @@ router.post('/email', (req, res) => {
   const transporter = nodemailer.createTransport('smtp://localhost');
   transporter.sendMail(message, (err, info) => {
     if (err) {
+      console.log(err);
       res.sendStatus(500);
       return;
     }
