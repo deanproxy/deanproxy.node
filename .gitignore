@@ -4,4 +4,5 @@ bundle.js
 bundle.js.map
 style.css
 *.log
+dump
 
