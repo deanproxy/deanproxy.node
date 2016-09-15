@@ -15,10 +15,6 @@ a {
   margin: 0 15%;
 }
 
-.navbar-right {
-  margin-right: 0;
-}
-
 input, textarea {
   font-size: 1.4em;
   padding: 10px;
@@ -303,3 +299,15 @@ section {
     margin-top: 0;
   }
 }
+
+@media(max-width:768px) {
+  .main-content{
+    margin: 0;
+  }
+}
+
+/* enables CSS3 transition for simple collapses, accordion and also navbar in responsive view */
+.collapse { transition: height .3s ease-out; /*-webkit-transition: height .3s ease-out*/ }
+
+/* styles the close button for the dismissible popovers */
+.popover .close { position: absolute; top: 7px; right: 10px; }
