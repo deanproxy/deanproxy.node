@@ -1,6 +1,9 @@
 $main-color: #29abe0;
 $danger-color: #d9534f;
 
+p {
+  margin: inherit;
+}
 a {
   color: #0078e1;
   &:hover {
@@ -113,24 +116,35 @@ section {
     padding: 5px 5px 5px 10px;
     margin: 10px 0;
     height: 100px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    section {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
     header {
       display: block;
       h2 {
-        display: inline-block;
-        width: 50%;
+        width: 90%;
         margin-top: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        float: left;
       }
       .actions {
+        float: left;
         display: inline-block;
-        width: 50%;
+        width: 10%;
         text-align: right;
         a {
           font-size: 1.5em;
           padding: 8px;
         }
+      }
+      &:after {
+        content: " ";
+        display: block;
+        clear: both;
       }
     }
   }
@@ -153,6 +167,8 @@ section {
       width: 100%;
       height: 300px;
       border: 1px solid #999;
+      overflow-y: auto;
+      padding: 10px;
     }
   }
 }
@@ -192,19 +208,39 @@ section {
     margin-top: 20px;
     a {
       font-size: 1.4em;
+      span {
+        float: left;
+      }
     }
     .previous-link {
       float: left;
-      span {
-        display: inline-block;
+      width: 50%;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      span.fa {
         margin-right: 10px;
+        font-size: 1.1em;
+      }
+      span.link-text {
+        width: 90%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
     }
     .next-link {
       float: right;
-      span {
-        display: inline-block;
+      width: 50%;
+      span.fa {
         margin-left: 10px;
+        font-size: 1.1em;
+      }
+      span.link-text {
+        width: 90%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
     }
     &:after {

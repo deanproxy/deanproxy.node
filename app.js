@@ -9,6 +9,7 @@ var passport = require('passport');
 var authConfig = require('./config/auth');
 var GithubStrategy = require('passport-github').Strategy;
 var session = require('express-session');
+var MongoStore = require('express-session-mongo');
 
 var routes = require('./routes/index');
 var posts = require('./routes/posts');
@@ -16,7 +17,11 @@ var posts = require('./routes/posts');
 var app = express();
 
 passport.serializeUser(function(user, done) {
-  done(null, user);
+  const suser = {
+    id: user.id,
+    username: user.username
+  }
+  done(null, suser);
 });
 passport.deserializeUser(function(user, done) {
   done(null, user);
@@ -50,10 +55,16 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+var sessionStore = new MongoStore({
+  db: 'deanproxy'
+});
+
 app.use(session({
+  key: 'wat-secret-store',
   secret: 'wat-secret-store',
-  resave: false,
-  saveUninitialized: false,
+  resave: true,
+  saveUninitialized: true,
+  store: sessionStore,
   cookie: { maxAge: 7*24*60*60*1000 }
 }));
 

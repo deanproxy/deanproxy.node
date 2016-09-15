@@ -16,7 +16,7 @@ class Post extends React.Component {
     const post = this.props.post;
 
     const createdAt = moment(post.createdAt).format();
-    const createdAtEnglish = moment(post.createdAt).calendar();
+    const createdAtEnglish = moment(post.createdAt).format("dddd, MMMM Do YYYY");
 
     if (this.props.post.tags) {
       tags = this.props.post.tags.map((tag,idx) => {
@@ -43,14 +43,14 @@ class Post extends React.Component {
         prev =
           <Link className="previous-link" to={`/posts/${post.previous._id}/${prevTitle}`}>
             <span className="fa fa-hand-o-left"></span>
-            {post.previous.title}
+            <span className="link-text">{post.previous.title}</span>
           </Link>;
       }
       if (this.props.post.next) {
       const nextTitle = this._makeUrlFromTitle(post.next.title);
         next =
           <Link className="next-link" to={`/posts/${post.next._id}/${nextTitle}`}>
-            {post.next.title}
+            <span className="link-text">{post.next.title}</span>
             <span className="fa fa-hand-o-right"></span>
           </Link>;
       }
