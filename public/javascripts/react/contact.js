@@ -16,13 +16,14 @@ class Contact extends React.Component {
     evt.preventDefault();
 
     const email = {
-      email: document.getElementById('email'),
-      message: document.getElementById('message')
+      email: document.getElementById('email').value,
+      message: document.getElementById('message').value
     }
     ApiHandler.post(ApiTypes.EMAIL, email)
       .then(response => {
         this.setState({sent: true, error: false});
       }).catch(response => {
+        console.log(response);
         this.setState({sent: false, error: true});
       });
   }
