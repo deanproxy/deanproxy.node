@@ -102,7 +102,7 @@ const ApiTypes = {
   SINGLE_POST: '/posts/:id',
   ALL_TAGS: '/tags',
   USER: '/admin/user',
-  EMAIL: '/message'
+  EMAIL: '/email'
 }
 
 const ApiHandler = new ApiClass();
