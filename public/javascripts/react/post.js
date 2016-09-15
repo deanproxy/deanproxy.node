@@ -31,7 +31,7 @@ class Post extends React.Component {
     let footer = '';
     const currentTitle = this._makeUrlFromTitle(post.title);
     if (this.props.summarize) {
-        const firstParagraph = post.htmlContent.match(/(.*)/);
+        const firstParagraph = post.content.match(/(.*)/);
         if (firstParagraph) {
           post.content = firstParagraph[0] +
             ` [[more...]](/#/posts/${post._id}/${currentTitle})`;
