@@ -9,6 +9,7 @@ function authMiddleware(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   }
+  console.log(`oh shit. we're not authenticated.... ${req.isAuthenticated()}`);
   res.redirect(401, '/login');
 }
 
