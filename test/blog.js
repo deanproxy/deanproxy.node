@@ -20,7 +20,35 @@ describe('Post', () => {
       .end((err, res) => {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        expect(res.body.posts).to.be.a('array');
+        expect(res.body.posts).to.be.a('object');
+        expect(res.body.posts.total).to.be.a('number');
+        expect(res.body.posts.posts).to.be.a('array');
+        done();
+      });
+  });
+
+  it('should allow limit and skip on /posts', done => {
+    let skippedId = 0;
+    chai.request(server).get('/posts?limit=1&skip=0')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body.posts).to.be.a('object');
+        expect(res.body.posts.total).to.be.a('number');
+        expect(res.body.posts.posts).to.be.a('array');
+        expect(res.body.posts.posts.length).to.equal(1);
+        skippedId = res.body.posts.posts[0]._id;
+      });
+
+    chai.request(server).get('/posts?limit=1&skip=1')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body.posts).to.be.a('object');
+        expect(res.body.posts.total).to.be.a('number');
+        expect(res.body.posts.posts).to.be.a('array');
+        expect(res.body.posts.posts.length).to.equal(1);
+        expect(res.body.posts.posts[0]._id).to.not.equal(skippedId);
         done();
       });
   });
@@ -92,7 +120,8 @@ describe('Post', () => {
         expect(res).to.be.json;
         expect(res.body).to.have.property('posts');
         expect(res.body).to.have.property('tag');
-        expect(res.body.posts).to.be.a('array');
+        expect(res.body.posts).to.be.a('object');
+        expect(res.body.posts.posts).to.be.a('array');
         expect(res.body.tag).to.be.a('string');
         done();
       });
@@ -106,8 +135,6 @@ describe('Post', () => {
         }
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        expect(res.body.tags[0]).to.equal('fan');
-        expect(res.body.tags[1]).to.equal('meow');
         done();
       });
   });
