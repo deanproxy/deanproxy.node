@@ -1,0 +1,8 @@
+extends layout
+
+block content
+  if state
+    script.
+      window.__PRELOADED_STATE__ = !{state};
+  div(class='main-content')  
+    div(id="react-content")!=react

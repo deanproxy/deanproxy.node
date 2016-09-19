@@ -9,5 +9,41 @@ html
     link(rel='stylesheet', href='/stylesheets/bootstrap-social.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
+    div(class="nav navbar-default navbar-static-top", role="navigation")
+      div(class="container-fluid")
+        div(class="navbar-header")
+          button(type="button", class="navbar-toggle collapsed",
+            data-toggle="collapse", data-target="#meow-navbar-collapse")
+            span(class="sr-only")
+              Toggle navigation
+            span(class="icon-bar")
+            span(class="icon-bar")
+            span(class="icon-bar")
+          a(href="/", class="navbar-brand")
+            em dean
+            |proxy
+        nav(id="meow-navbar-collapse", class="collapse navbar-collapse", aria-expanded="false")
+          ul(class="nav navbar-nav")
+            li 
+              a(href="/code", class="bs-navbar-links") code
+            li
+              a(href="/music", class="bs-navbar-links") music
+            li
+              a(href="/about", class="bs-navbar-links") about
+            li
+              a(href="/contact", class="bs-navbar-links") contact
     block content
     script(src='/javascripts/bundle.js')
+    script.
+      /** bootstrap.native may have a bug where it won't close the navbar when
+        * you supply the data-toggle/data-target to an anchor tag. So this is
+        * a small workaround to fix that. */
+      var navbar = document.getElementById('meow-navbar-collapse');
+      var links = document.getElementsByClassName('bs-navbar-links');
+      for (var i=0; i < links.length; i++) {
+        var l = links[i];
+        l.addEventListener('click', function(e) {
+          navbar.className = navbar.className.replace('in', '');
+        });
+      }
+      

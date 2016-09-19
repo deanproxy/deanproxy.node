@@ -1,3 +1,9 @@
+require('babel-register')({
+  extensions: ['.js'],
+  presets: ['es2015', 'react'],
+  only: '/public/javascripts/react/',
+});
+
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -85,12 +91,17 @@ app.get('/auth/github/callback',
       req.logout();
       res.redirect('/login');
     } else {
-      res.redirect('/#/admin');
+      res.redirect('/admin');
     }
   });
 
 app.use('/', routes);
 app.use('/posts', posts);
+
+app.get('*', function(req, res) {
+  res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
+});
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

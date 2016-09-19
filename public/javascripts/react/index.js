@@ -5,53 +5,27 @@ import Post from './post';
 import Paginate from './paginate';
 
 class Index extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      posts: {
-        posts: [],
-        total: 0
-      }
-    }
-
-    this.limit = 5;
-    this._callback = this._callback.bind(this);
-  }
-
-  _callback(response) {
-    this.setState(response);
-    ApiHandler.unwatch(this.api, this._callback);
-  }
-
-  _getData(props) {
-    this.skip = props.location.query.skip || 0;
-    this.api = ApiTypes.ALL_POSTS;
-    if (props.params.tag) {
-      this.api = ApiTypes.POSTS_BY_TAG.replace(':tag', props.params.tag);
-    }
-    ApiHandler.watch(this.api, {limit:this.limit, skip:this.skip}, this._callback);
-  }
-
-  componentWillReceiveProps(props) {
-    this._getData(props);
-  }
-
-  componentDidMount() {
-    this._getData(this.props);
+  constructor(props) {
+    super(props);
   }
 
   render() {
-    let url = '/';
-    if (this.props.params.tag) {
-      url = `/tags/${this.props.params.tag}`;
+    let state = this.props;
+    if (typeof window !== 'undefined') {
+      state = window.__PRELOADED_STATE__;
     }
-    const posts = this.state.posts.posts.map(post => {
+
+    let url = '/posts';
+    if (state.tag) {
+      url = `/posts/tags/${state.tag}`;
+    }
+    const posts = state.posts.posts.map(post => {
       return <Post key={post._id} post={post} summarize="true"/>;
     });
     return (
       <div className="index">
         {posts}
-        <Paginate url={url} limit={this.limit} skip={this.skip} total={this.state.posts.total}/>
+        <Paginate url={url} limit={state.posts.limit} skip={state.posts.skip} total={state.posts.total}/>
       </div>
     );
   }

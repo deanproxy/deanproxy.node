@@ -1,7 +1,10 @@
 import React from 'react';
-import {Link} from 'react-router';
 
 class About extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
   render() {
     return (
     	<div className="about">
@@ -16,7 +19,7 @@ class About extends React.Component {
     		<p>
     			I'm a software engineer by profession.  I am a geek by hobby. I spend large sums of time
     			playing with new programming languages and learning about writing good quality code. I do
-    			have many other interest though... I play guitar, do <Link to="/music">DJ Mix Sets</Link>,
+    			have many other interest though... I play guitar, do <a href="/music">DJ Mix Sets</a>,
     			I love to go whitewater kayaking, I practice martial arts - specifically Muay Thai and
     			Brazillian Jiu Jitsu (although I've been slack on that lately) and I love mountain biking.
     		</p>
@@ -39,12 +42,11 @@ class About extends React.Component {
     		</p>
     		<p>
     			The site will basically hold ramblings from me, code snippets, and host
-          by <Link to="/code">coding projects</Link>, <Link to="/music">random music</Link> and
-    			other things.  If you'd like, <Link to="/contact">let me know what's up.</Link>
+          by <a href="/code">coding projects</a>, <a href="/music">random music</a> and
+    			other things.  If you'd like, <a href="/contact">let me know what's up.</a>
     		</p>
     	</div>
     );
   }
 }
-
 export default About;

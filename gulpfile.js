@@ -20,7 +20,8 @@ var bundleOpts = {
 
 /** Make sure files are placed in the right order. Some things depends on others.  */
 bundleOpts.jsSrc = bundleOpts.jsSrc.concat(
-    glob.sync('public/javascripts/react/*.js')
+    glob.sync('public/javascripts/react/index.js'),
+    'public/javascripts/react/main.js'
 );
 
 var opts = assign({}, watchify.args, {
@@ -75,4 +76,3 @@ function watch() {
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest(bundleOpts.jsDest))
 }
-

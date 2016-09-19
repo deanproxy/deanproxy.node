@@ -8,47 +8,10 @@ import {Link} from 'react-router';
 import Paginate from './paginate';
 
 class AdminIndex extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      posts: {
-        total: 0,
-        posts: []
-      }
-    }
-
+  constructor(props) {
+    super(props);
     this.limit = 5;
     this.delete = this.delete.bind(this);
-    this._callback = this._callback.bind(this);
-  }
-
-  _callback(response) {
-    this.setState({
-      posts: response.posts.posts
-    });
-  }
-
-  componentWillUnmount() {
-    ApiHandler.unwatch(ApiTypes.ALL_POSTS, this._callback);
-  }
-
-  _callback(response) {
-    this.setState(response);
-    ApiHandler.unwatch(ApiTypes.ALL_POSTS, this._callback);
-  }
-
-  _getData(query) {
-    this.skip = query.skip || 0;
-
-    ApiHandler.watch(ApiTypes.ALL_POSTS, {limit:this.limit, skip:this.skip}, this._callback);
-  }
-
-  componentWillReceiveProps(props) {
-    this._getData(props.location.query);
-  }
-
-  componentDidMount() {
-    this._getData(this.props.location.query);
   }
 
   delete(evt) {
@@ -63,17 +26,21 @@ class AdminIndex extends React.Component {
   }
 
   render() {
+    let state = this.props;
+    if (typeof window !== 'undefined') {
+      state = window.__PRELOADED_STATE__;
+    }
     let posts = [];
 
-    if (this.state.posts && this.state.posts.posts.length) {
-      posts = this.state.posts.posts.map(post => {
+    if (state.posts && state.posts.posts.length) {
+      posts = state.posts.posts.map(post => {
         const content = post.content.match(/(.*)/);
         return (
           <article key={post._id}>
             <header>
               <h2>{post.title}</h2>
               <div className="actions">
-                <a href={'/#/admin/edit/' + post._id}>
+                <a href={'/admin/edit/' + post._id}>
                   <span className="fa fa-edit"></span>
                 </a>
                 <a href className="danger" onClick={this.delete}>
@@ -99,7 +66,7 @@ class AdminIndex extends React.Component {
           </div>
         </div>
         {posts}
-        <Paginate url="/admin" limit={this.limit} skip={this.skip} total={this.state.posts.total}/>
+        <Paginate url="/admin" limit={state.posts.limit} skip={state.posts.skip} total={state.posts.total}/>
       </div>
     )
   }

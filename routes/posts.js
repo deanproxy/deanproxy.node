@@ -3,52 +3,24 @@ const Post = require('../models/post');
 const marked = require('marked');
 const parallel = require('async/parallel');
 
+const shared = require('./shared');
+
+const Index = require('../public/javascripts/react/index').default;
+const Show = require('../public/javascripts/react/show').default;
+
+const React = require('react');
+const ReactDOM = require('react-dom/server');
+
 const router = express.Router();
 
-function authMiddleware(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  console.log(`oh shit. we're not authenticated.... ${req.isAuthenticated()}`);
-  res.redirect(401, '/login');
-}
-
-function queryPosts(options) {
-  let q = undefined;
-  options = options || {};
-
-  return new Promise((resolve, reject) => {
-    if (!options.query) {
-      q = Post.find({}, null, {sort: {createdAt:-1}});
-    } else {
-      q = Post.find(options.query, null, {sort: {createdAt:-1}});
-    }
-
-    if (options.limit) {
-      q = q.limit(options.limit);
-    }
-    if (options.skip) {
-      q = q.skip(options.skip);
-    }
-
-    q.exec((err, posts) => {
-      if (err) {
-        reject(err);
-      } else {
-        Post.count(options.query, (err, count) => {
-          const obj = {
-            total: count,
-            posts: posts
-          }
-          resolve(obj);
-        })
-      }
-    });
-  });
-}
+const IndexElement = React.createFactory(Index);
+const ShowElement = React.createFactory(Show);
 
 router.get('/', (req, res) => {
-  var options = { };
+  var options = {
+    skip: 0,
+    limit: 5
+  };
 
   if (req.query.limit) {
     options.limit = req.query.limit;
@@ -57,11 +29,19 @@ router.get('/', (req, res) => {
     options.skip = req.query.skip;
   }
 
-  queryPosts(options).then(response => {
-    res.json({posts: response});
+  shared.queryPosts(options).then(response => {
+    const obj = {
+      tag: req.params.tag || '',
+      posts: response
+    };
+    if (req.accepts('html')) {
+      res.render('index', {react: IndexElement(obj), state: JSON.stringify(obj)});
+    } else {
+      res.json(obj);
+    }
   }).catch(response => {
     console.log(response);
-    res.sendStatus(500);
+    throw response;
   });
 });
 
@@ -80,7 +60,9 @@ router.get('/tags/:tag', (req, res) => {
   const options = {
     query: {
       tags: {$in: [req.params.tag]}
-    }
+    },
+    limit: 5,
+    skip: 0
   };
 
   if (req.query.limit) {
@@ -90,15 +72,23 @@ router.get('/tags/:tag', (req, res) => {
     options.skip = req.query.skip;
   }
 
-  queryPosts(options).then(response => {
-    res.json({tag: req.params.tag, posts: response});
+  shared.queryPosts(options).then(response => {
+    const obj = {
+      tag: req.params.tag,
+      posts: response
+    };
+    if (req.accepts('html')) {
+      res.render('index', {react: IndexElement(obj), state: JSON.stringify(obj)});
+    } else {
+      res.json(obj);
+    }
   }).catch(response => {
     console.log(response);
     res.sendStatus(500);
   })
 });
 
-router.post('/', authMiddleware, (req, res) => {
+router.post('/', shared.authMiddleware, (req, res) => {
   const post = new Post(req.body);
   post.save(err => {
     if (err) {
@@ -110,29 +100,7 @@ router.post('/', authMiddleware, (req, res) => {
   });
 });
 
-router.get('/latest', (req, res) => {
-  Post.findOne({}, null, {sort: {'createdAt':-1}}, (err, post) => {
-    if (err) {
-      console.log(err);
-      res.sendStatus(500);
-      return;
-    }
-    Post.findOne({'createdAt': { $lt: post.createdAt }}, 'title', {sort: {createdAt:-1}},
-      (err, response) => {
-        if (err) {
-          console.log(err);
-          res.sendStatus(500);
-        }
-        const p = post.toObject();
-        if (response) {
-          p.previous = response;
-        }
-        res.json({post: p});
-      });
-  });
-});
-
-router.get('/:id', (req, res) => {
+router.get('/:id/:name', (req, res) => {
   Post.findById(req.params.id, (err, post) => {
     if (err) {
       console.log(err);
@@ -140,34 +108,35 @@ router.get('/:id', (req, res) => {
     } else {
       /* get the previous and next posts */
       const p = post.toObject();
-      parallel([
-        function(callback) {
-          /* how can we get the next post? currently we are always getting the first post */
-          Post.find({createdAt: { $gt: post.createdAt }}, 'title', {sort: {createdAt:-1}},
-          (err, response) => {
-            if (response) {
-              p.next = response[response.length-1];
-            }
-            callback(null, response);
-          });
+      Promise.all([
+        () => {
+          return Post.find({createdAt: { $gt: post.createdAt }}, 'title', {sort: {createdAt:-1}},
+            (err, response) => {
+              if (response) {
+                p.next = response[response.length-1];
+              }
+            });
         },
-        function(callback) {
-          Post.findOne({createdAt: { $lt: post.createdAt }}, 'title', {sort: {createdAt:-1}},
+        () => {
+          return Post.findOne({createdAt: { $lt: post.createdAt }}, 'title', {sort: {createdAt:-1}},
             (err, response) => {
               if (response) {
                 p.previous = response;
               }
-              callback(null, response);
-          });
+            });
         }
-      ], function(err, results) {
-        res.json({post: p});
+      ]).then((results) => {
+        if (req.accepts('html')) {
+          res.render('index', {react: ShowElement(p), state: JSON.stringify(p)});
+        } else {
+          res.json(p);
+        }
       });
     }
   });
 });
 
-router.put('/:id', authMiddleware, (req, res) => {
+router.put('/:id', shared.authMiddleware, (req, res) => {
   const post = req.body;
   Post.findByIdAndUpdate(
     req.params.id,
@@ -182,7 +151,7 @@ router.put('/:id', authMiddleware, (req, res) => {
     });
 });
 
-router.delete('/:id', authMiddleware, (req, res) => {
+router.delete('/:id', shared.authMiddleware, (req, res) => {
   Post.findByIdAndRemove(req.params.id, (err, post) => {
     if (err) {
       res.sendStatus(404);

@@ -3,19 +3,8 @@ import marked from 'marked';
 import {ApiTypes, ApiHandler} from './data';
 
 class Edit extends React.Component {
-  constructor() {
-    super();
-
-    this.state = {
-      post: {
-        _id: '',
-        title: '',
-        content: '',
-        disableComments: true,
-        tags: []
-      }
-    }
-
+  constructor(props) {
+    super(props);
     this.close = this.close.bind(this);
     this.save = this.save.bind(this);
     this.change = this.change.bind(this);
@@ -51,24 +40,16 @@ class Edit extends React.Component {
 
     ApiHandler.submit(apiType, method, this.state.post);
     clearInterval(this.interval);
-    window.location = '/#/admin';
+    window.location = '/admin';
   }
 
   close(evt) {
     evt.preventDefault();
     clearInterval(this.interval);
-    window.location = '/#/admin';
+    window.location = '/admin';
   }
 
   componentDidMount() {
-    const id = this.props.params.id;
-    if (id) {
-      const api = ApiTypes.SINGLE_POST.replace(':id', id);
-      ApiHandler.watch(api, res => {
-        this.setState({post: res.post});
-      });
-    }
-
     const preview = () => {
       const content = document.getElementById('content');
       const preview = document.getElementById('preview');
@@ -78,6 +59,10 @@ class Edit extends React.Component {
   }
 
   render() {
+    this.state = this.props;
+    if (typeof window !== 'undefined') {
+      this.state = window.__PRELOADED_STATE__;
+    }
     const tags = this.state.post.tags.join(',');
     return (
       <div className="edit">
