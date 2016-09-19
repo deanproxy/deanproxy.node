@@ -3,7 +3,6 @@ import Mime from 'rest/interceptor/mime';
 import ErrorCode from 'rest/interceptor/errorCode';
 import _ from 'lodash';
 
-
 class ApiClass {
   constructor() {
     this.rest = Rest.wrap(Mime, {mime: 'application/json'}).wrap(ErrorCode);
