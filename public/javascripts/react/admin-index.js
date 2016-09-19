@@ -4,8 +4,8 @@ import {ApiTypes, ApiHandler} from './data';
 import Modal from './modal';
 import Bootstrap from 'bootstrap.native';
 import marked from 'marked';
-import {Link} from 'react-router';
 import Paginate from './paginate';
+import Alert from './alert';
 
 class AdminIndex extends React.Component {
   constructor(props) {
@@ -18,7 +18,13 @@ class AdminIndex extends React.Component {
     evt.preventDefault();
     const id = evt.target.dataset.postId;
     const api = ApiTypes.SINGLE_POST.replace(':id', id);
-    ApiHandler.submit(api, 'delete', {});
+
+    ApiHandler.delete(api).then(response => {
+      window.location = '/admin';
+    }).catch(response => {
+      ReactDOM.render(<Alert type='danger' header='Error' message='Did not delete that post.'/>,
+        document.getElementById('react-alert'));
+    });
   }
 
   search(evt) {
@@ -59,7 +65,7 @@ class AdminIndex extends React.Component {
     return (
       <div className="admin">
         <div className="actions">
-          <Link to="admin/new" className="btn btn-primary">Add New Post</Link>
+          <a href="/admin/new" className="btn btn-primary">Add New Post</a>
           <div className="search">
             <input type="text" name="search" onChange={this.search} placeholder="Search is broken right now..."/>
             <span className="fa fa-search"></span>

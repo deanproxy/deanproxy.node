@@ -25,66 +25,16 @@ class ApiClass {
     return serialized;
   }
 
-  unwatch(type, callback) {
-    this.apis.forEach((a,i) => {
-      if (a.type === type && a.callback === callback) {
-        this.apis.splice(i, 1);
-      }
-    });
-  }
-
-  watch(type, params, callback) {
-    /* params is an optional field. so if it's a function, make it the callback. */
-    if (typeof params === 'function') {
-      callback = params;
-      params = null;
+  _send(url, method, params, object) {
+    if (params && object === undefined) {
+      object = params;
+    } else if (params) {
+      url = `${url}?${this.serialize(params)}`;
     }
-
-    this.apis.push({
-      type: type,
-      params: params,
-      callback: callback
-    });
-
-    let url = type;
-    if (params) {
-      url += `?${this.serialize(params)}`;
-    }
-
-    this.rest(url).then(response => {
-      this._notify(type, response.entity);
-    }, response => {
-      console.log(`Server response for ${type}: ${response.status.text}`);
-      alert(`${type}: ${response.status.text}`);
-    });
-  }
-
-  _notify(type, object) {
-    _.each(this.apis, obj => {
-      if (obj.type === type) {
-        obj.callback(object);
-      }
-    });
-  }
-
-  submit(type, method, object) {
-    this.rest({
-      path: type,
-      method: method,
-      entity: object
-    }).then(response => {
-      this._notify(type, response.entity);
-    }, response => {
-      console.log(response.status.text);
-      alert(response.status.text);
-    });
-  }
-
-  post(type, object) {
     return new Promise((resolve, reject) => {
       this.rest({
-        path: type,
-        method: 'post',
+        path: url,
+        method: method,
         entity: object
       }).then(response => {
         resolve(response.entity);
@@ -92,6 +42,19 @@ class ApiClass {
         reject(response);
       });
     });
+  }
+
+  post(url, params, object) {
+    return this._send(url, 'post', params, object);
+  }
+  put(url, params, object) {
+    return this._send(url, 'put', params, object);
+  }
+  delete(url, params, object) {
+    return this._send(url, 'delete', params, object);
+  }
+  get(url, params) {
+    return this._send(url, 'get', params, null);
   }
 
 }

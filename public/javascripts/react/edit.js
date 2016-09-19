@@ -1,6 +1,8 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import marked from 'marked';
 import {ApiTypes, ApiHandler} from './data';
+import Alert from './alert';
 
 class Edit extends React.Component {
   constructor(props) {
@@ -28,19 +30,23 @@ class Edit extends React.Component {
 
   save(evt) {
     evt.preventDefault();
-    let apiType = ApiTypes.ALL_POSTS;
-    let method  = 'post';
+    let api = ApiTypes.ALL_POSTS;
+    let method  = ApiHandler.post;
     if (this.state.post._id) {
-      apiType = ApiTypes.SINGLE_POST.replace(':id', this.state.post._id);
-      method = 'put';
+      api = ApiTypes.SINGLE_POST.replace(':id', this.state.post._id);
+      method = ApiHandler.put;
     } else {
       /* if this is a new post, we don't want to submit the _id attribute */
       delete this.state.post._id;
     }
 
-    ApiHandler.submit(apiType, method, this.state.post);
-    clearInterval(this.interval);
-    window.location = '/admin';
+    method(api, this.state.post).then(response => {
+      clearInterval(this.interval);
+      window.location = '/admin';
+    }).catch(response => {
+      ReactDOM.render(<Alert type='danger' header='Error' message='Someting odd happened.'/>,
+        document.getElementById('react-alert'));
+    });
   }
 
   close(evt) {

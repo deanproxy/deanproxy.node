@@ -1,14 +1,12 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {ApiTypes, ApiHandler} from './data';
+import Alert from './alert';
 
 class Contact extends React.Component {
   constructor() {
     super();
 
-    this.state = {
-      sent: false,
-      error: false
-    }
     this.submit = this.submit.bind(this);
   }
 
@@ -23,26 +21,20 @@ class Contact extends React.Component {
     }
     ApiHandler.post(ApiTypes.EMAIL, email)
       .then(response => {
-        this.setState({sent: true, error: false});
         from.value = '';
         message.value = '';
+        ReactDOM.render(<Alert type="success" header="Thanks!" message="I received your e-mail. Cross your fingers it doesn't wind up in spam."/>,
+          document.getElementById('react-alert'));
       }).catch(response => {
-        console.log(response);
-        this.setState({sent: false, error: true});
+        ReactDOM.render(<Alert type="danger" header="Sorry" message="An error occured while trying to send your message."/>,
+          document.getElementById('react-alert'));
       });
   }
 
   render() {
-    let alertMessage = ''
-    if (this.state.sent) {
-      alertMessage = <div className="alert alert-success" role="alert"><span className="fa fa-check"></span> Message sent. Thanks!</div>;
-    } else if (this.state.error) {
-      alertMessage = <div className="alert alert-danger" role="alert"><span className="fa fa-warning"></span> There was a problem sending the message.</div>;
-    }
     return (
       <div className="contact">
         <h1>Contact</h1>
-        {alertMessage}
         <form onSubmit={this.submit}>
           <ul>
             <li>
