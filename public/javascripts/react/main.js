@@ -24,7 +24,7 @@ render((
       <Route path="code"    component={Code}/>
       <Route path="about"   component={About}/>
       <Route path="music"   component={Music}/>
-      <Route path="posts/:id/:name" component={Show}/>
+      <Route path="posts/:year/:month/:day/:name" component={Show}/>
     </Route>
 
     <Route path="/admin">

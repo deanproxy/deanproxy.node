@@ -35,7 +35,10 @@ router.get('/', (req, res) => {
       posts: response
     };
     if (req.accepts('html')) {
-      res.render('index', {react: IndexElement(obj), state: JSON.stringify(obj)});
+      res.render('index', {
+        react: ReactDOM.renderToString(IndexElement(obj)), 
+        state: JSON.stringify(obj)
+      });
     } else {
       res.json(obj);
     }
@@ -78,7 +81,10 @@ router.get('/tags/:tag', (req, res) => {
       posts: response
     };
     if (req.accepts('html')) {
-      res.render('index', {react: IndexElement(obj), state: JSON.stringify(obj)});
+      res.render('index', {
+        react: ReactDOM.renderToString(IndexElement(obj)),
+        state: JSON.stringify(obj)
+      });
     } else {
       res.json(obj);
     }
@@ -90,6 +96,7 @@ router.get('/tags/:tag', (req, res) => {
 
 router.post('/', shared.authMiddleware, (req, res) => {
   const post = new Post(req.body);
+  post.name = post.title.replace(/[^A-Za-z0-9-]/g, '-').toLowerCase();
   post.save(err => {
     if (err) {
       console.log(err);
@@ -100,8 +107,8 @@ router.post('/', shared.authMiddleware, (req, res) => {
   });
 });
 
-router.get('/:id/:name', (req, res) => {
-  Post.findById(req.params.id, (err, post) => {
+router.get('/:year/:month/:day/:name', (req, res) => {
+  Post.findOne({name: req.params.name}, (err, post) => {
     if (err) {
       console.log(err);
       res.sendStatus(404);
@@ -110,24 +117,29 @@ router.get('/:id/:name', (req, res) => {
       const p = post.toObject();
       Promise.all([
         () => {
-          return Post.find({createdAt: { $gt: post.createdAt }}, 'title', {sort: {createdAt:-1}},
+          return post.next(
             (err, response) => {
               if (response) {
                 p.next = response[response.length-1];
               }
-            });
+            }
+          );
         },
         () => {
-          return Post.findOne({createdAt: { $lt: post.createdAt }}, 'title', {sort: {createdAt:-1}},
+          return post.previous(
             (err, response) => {
               if (response) {
                 p.previous = response;
               }
-            });
+            }
+          );
         }
       ]).then((results) => {
         if (req.accepts('html')) {
-          res.render('index', {react: ShowElement(p), state: JSON.stringify(p)});
+          res.render('index', {
+            react: ReactDOM.renderToString(ShowElement(p)),
+            state: JSON.stringify(p)
+          });
         } else {
           res.json(p);
         }

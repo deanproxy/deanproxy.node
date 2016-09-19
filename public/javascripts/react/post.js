@@ -3,11 +3,13 @@ import moment from 'moment';
 import marked from 'marked';
 
 class Post extends React.Component {
-  _makeUrlFromTitle(title) {
+  _makeUrl(title, createdAt) {
     if (!title) {
       return title;
     }
-    return title.replace(/[^A-Za-z0-9-]/g, '-').toLowerCase();
+    const m = moment(createdAt);
+    const name = title.replace(/[^A-Za-z0-9-]/g, '-').toLowerCase();
+    return `/posts/${m.format('YYYY')}/${m.format('MM')}/${m.format('DD')}/${name}`;
   }
 
   render() {
@@ -28,27 +30,28 @@ class Post extends React.Component {
     }
 
     let footer = '';
-    const currentTitle = this._makeUrlFromTitle(post.title);
+    const currentTitle = this._makeUrl(post.title, post.createdAt);
     if (this.props.summarize) {
         const firstParagraph = post.content.match(/(.*)/);
+        const url = this._makeUrl(post.title, post.createdAt);
         if (firstParagraph) {
           post.content = firstParagraph[0] +
-            ` [[more...]](/posts/${post._id}/${currentTitle})`;
+            ` [[more...]](${url})`;
         }
     } else {
       let prev='', next='';
       if (post.previous) {
-        const prevTitle = this._makeUrlFromTitle(post.previous.title);
+        const prevTitle = this._makeUrl(post.previous.title, post.previous.createdAt);
         prev =
-          <a className="previous-link" href={`/posts/${post.previous._id}/${prevTitle}`}>
+          <a className="previous-link" href={prevTitle}>
             <span className="fa fa-hand-o-left"></span>
             <span className="link-text">{post.previous.title}</span>
           </a>;
       }
       if (this.props.post.next) {
-      const nextTitle = this._makeUrlFromTitle(post.next.title);
+      const nextTitle = this._makeUrl(post.next.title, post.next.createdAt);
         next =
-          <a className="next-link" href={`/posts/${post.next._id}/${nextTitle}`}>
+          <a className="next-link" href={nextTitle}>
             <span className="link-text">{post.next.title}</span>
             <span className="fa fa-hand-o-right"></span>
           </a>;
@@ -62,7 +65,7 @@ class Post extends React.Component {
       <div className="post">
         <article id={post._id}>
           <header>
-            <h1><a href={`/posts/${post._id}/${currentTitle}`}>{post.title}</a></h1>
+            <h1><a href={currentTitle}>{post.title}</a></h1>
             <time dateTime={createdAt}><span className="fa fa-calendar"></span> {createdAtEnglish}</time>
           </header>
           <section dangerouslySetInnerHTML={{__html: marked(post.content)}}/>

@@ -1,5 +1,7 @@
 const chai = require('chai');
 const http = require('chai-http');
+const cheerio = require('cheerio');
+const moment = require('moment');
 const expect = chai.expect;
 
 process.env.NODE_ENV = 'test';
@@ -7,7 +9,7 @@ const server = require('../app');
 
 chai.use(http);
 
-let id = 0;
+let post = {};
 let authenticated = true;
 server.request.isAuthenticated = () => {
   return authenticated;
@@ -19,10 +21,9 @@ describe('Post', () => {
     chai.request(server).get('/posts')
       .end((err, res) => {
         expect(res).to.have.status(200);
-        expect(res).to.be.json;
-        expect(res.body.posts).to.be.a('object');
-        expect(res.body.posts.total).to.be.a('number');
-        expect(res.body.posts.posts).to.be.a('array');
+        expect(res).to.be.html;
+        const $ = cheerio.load(res.text);
+        expect($('#react-content').length).to.equal(1);
         done();
       });
   });
@@ -32,24 +33,11 @@ describe('Post', () => {
     chai.request(server).get('/posts?limit=1&skip=0')
       .end((err, res) => {
         expect(res).to.have.status(200);
-        expect(res).to.be.json;
-        expect(res.body.posts).to.be.a('object');
-        expect(res.body.posts.total).to.be.a('number');
-        expect(res.body.posts.posts).to.be.a('array');
-        expect(res.body.posts.posts.length).to.equal(1);
-        skippedId = res.body.posts.posts[0]._id;
-      });
-
-    chai.request(server).get('/posts?limit=1&skip=1')
-      .end((err, res) => {
-        expect(res).to.have.status(200);
-        expect(res).to.be.json;
-        expect(res.body.posts).to.be.a('object');
-        expect(res.body.posts.total).to.be.a('number');
-        expect(res.body.posts.posts).to.be.a('array');
-        expect(res.body.posts.posts.length).to.equal(1);
-        expect(res.body.posts.posts[0]._id).to.not.equal(skippedId);
+        expect(res).to.be.html;
+        const $ = cheerio.load(res.text);
+        expect($('#react-content').length).to.equal(1);
         done();
+        // skippedId = res.body.posts.posts[0]._id;
       });
   });
 
@@ -58,7 +46,7 @@ describe('Post', () => {
     chai.request(server).post('/posts')
       .send({'title': 'test', 'content': 'test'})
       .end((err, res) => {
-        expect(res).to.have.status(401);
+        expect(res).to.redirect;
         done();
       });
   });
@@ -75,13 +63,13 @@ describe('Post', () => {
         expect(res).to.be.json;
         expect(res.body).to.have.property('post');
         expect(res.body.post).to.be.a('object');
-        id = res.body.post._id;
+        post = res.body.post;
         done();
       });
   });
 
   it('should let me edit a post on /posts/:id', done => {
-    chai.request(server).put(`/posts/${id}`)
+    chai.request(server).put(`/posts/${post._id}`)
       .send({'title': 'meow', 'tags':['meow', 'fan']})
       .end((err, res) => {
         if (err) {
@@ -91,20 +79,25 @@ describe('Post', () => {
         expect(res).to.be.json;
         expect(res.body).to.have.property('post');
         expect(res.body.post).to.be.a('object');
+        post = res.body.post;
         done();
       });
   });
 
-  it('should let me get a post on /posts/:id', done => {
-    chai.request(server).get(`/posts/${id}`)
+  it('should let me get a post on /posts/:year/:month/:day/:name', done => {
+    const m = moment(post.createdAt);
+    const url = `/posts/${m.format('YYYY')}/${m.format('MM')}/${m.format('DD')}/${post.name}`;
+    chai.request(server).get(url)
       .end((err, res) => {
         if (err) {
           console.log(err.response.text);
         }
         expect(res).to.have.status(200);
-        expect(res).to.be.json;
-        expect(res.body).to.have.property('post');
-        expect(res.body.post).to.be.a('object');
+        expect(res).to.be.html;
+        const $ = cheerio.load(res.text);
+        const root = $('#react-content');
+        expect(root.find('.post').length).to.equal(1);
+        expect(root.find('article header h1').text()).to.equal('meow');
         done();
       });
   });
@@ -117,12 +110,11 @@ describe('Post', () => {
           console.log(err.response.text);
         }
         expect(res).to.have.status(200);
-        expect(res).to.be.json;
-        expect(res.body).to.have.property('posts');
-        expect(res.body).to.have.property('tag');
-        expect(res.body.posts).to.be.a('object');
-        expect(res.body.posts.posts).to.be.a('array');
-        expect(res.body.tag).to.be.a('string');
+        expect(res).to.be.html;
+        const $ = cheerio.load(res.text);
+        const root = $('#react-content');
+        expect(root.find('.post').length).to.not.equal(0);
+        expect(root.find('.post:first-child article header h1').text()).to.equal(post.title);
         done();
       });
   });
@@ -140,7 +132,7 @@ describe('Post', () => {
   });
 
   it('should let me delete a post on /posts/:id', done => {
-    chai.request(server).delete(`/posts/${id}`)
+    chai.request(server).delete(`/posts/${post._id}`)
       .send()
       .end((err, res) => {
         if (err) {

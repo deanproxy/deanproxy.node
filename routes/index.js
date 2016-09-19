@@ -29,20 +29,20 @@ router.get('/', (req, res) => {
 });
 
 router.get('/code', (req, res) => {
-  res.render('index', {react: CodeElement()});
+  res.render('index', {react: ReactDOM.renderToString(CodeElement())});
 });
 router.get('/music', (req, res) => {
-  res.render('index', {react: MusicElement()});
+  res.render('index', {react: ReactDOM.renderToString(MusicElement())});
 });
 router.get('/about', (req, res) => {
-  res.render('index', {react: AboutElement()});
+  res.render('index', {react: ReactDOM.renderToString(AboutElement())});
 });
 router.get('/contact', (req, res) => {
-  res.render('index', {react: ContactElement()});
+  res.render('index', {react: ReactDOM.renderToString(ContactElement())});
 });
 
 router.get('/login', (req, res) => {
-  res.render('index', {react: LoginElement()});
+  res.render('index', {react: ReactDOM.renderToString(LoginElement())});
 });
 router.get('/admin', shared.authMiddleware, (req, res) => {
   const options = {
@@ -62,14 +62,17 @@ router.get('/admin', shared.authMiddleware, (req, res) => {
       posts: posts
     };
     if (req.accepts('html')) {
-      res.render('index', {react: AdminIndexElement(obj), state: JSON.stringify(obj)});
+      res.render('index', {
+        react: ReactDOM.renderToString(AdminIndexElement(obj)),
+        state: JSON.stringify(obj)
+      });
     } else {
       res.json(posts);
     }
   });
 });
 router.get('/admin/new', shared.authMiddleware, (req, res) => {
-  res.render('index', {react: EditElement()});
+  res.render('index', {react: ReactDOM.renderToString(EditElement())});
 });
 router.get('/admin/edit/:id', shared.authMiddleware, (req, res) => {
   Post.findById(req.params.id, (err, post) => {
@@ -80,7 +83,10 @@ router.get('/admin/edit/:id', shared.authMiddleware, (req, res) => {
     var obj = {
       post: post
     };
-    res.render('index', {react: EditElement(obj), state: JSON.stringify(obj)});
+    res.render('index', {
+      react: ReactDOM.renderToString(EditElement(obj)),
+      state: JSON.stringify(obj)
+    });
   });
 });
 router.get('/logout', (req, res) => {
