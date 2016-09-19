@@ -31,14 +31,8 @@ class Post extends React.Component {
 
     let footer = '';
     const currentTitle = this._makeUrl(post.title, post.createdAt);
-    if (this.props.summarize) {
-        const firstParagraph = post.content.match(/(.*)/);
-        const url = this._makeUrl(post.title, post.createdAt);
-        if (firstParagraph) {
-          post.content = firstParagraph[0] +
-            ` [[more...]](${url})`;
-        }
-    } else {
+    let content = post.content;
+    if (!this.props.summarize) {
       let prev='', next='';
       if (post.previous) {
         const prevTitle = this._makeUrl(post.previous.title, post.previous.createdAt);
@@ -58,6 +52,8 @@ class Post extends React.Component {
       }
 
       footer = <footer>{prev}{next}</footer>;
+    } else {
+      content = post.content.match(/(.*\.\n){1,30}/)[0] + ` [[more...]](${currentTitle})`;
     }
 
     /* NOTE: for the meantime, comments are disabled on all posts. */
@@ -68,7 +64,7 @@ class Post extends React.Component {
             <h1><a href={currentTitle}>{post.title}</a></h1>
             <time dateTime={createdAt}><span className="fa fa-calendar"></span> {createdAtEnglish}</time>
           </header>
-          <section dangerouslySetInnerHTML={{__html: marked(post.content)}}/>
+          <section dangerouslySetInnerHTML={{__html: marked(content)}}/>
           <div className="tags"><span className="fa fa-tag"></span> {tags}</div>
           {footer}
         </article>

@@ -46,6 +46,7 @@ function buildSass() {
 
 /* Build: Used to deploy minified code for production use. */
 function build() {
+  process.env.NODE_ENV = 'production';
   var b = browserify({
     entries: bundleOpts.jsSrc,
     debug: false
