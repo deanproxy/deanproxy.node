@@ -5,7 +5,6 @@ import {Router, IndexRoute, Route, browserHistory} from 'react-router';
 import Layout from './layout';
 import Login from './login';
 import Code from './code';
-import About from './about';
 import Music from './music';
 import Contact from './contact';
 import Show from './show';
@@ -22,7 +21,6 @@ render((
       <Route path="login"   component={Login}/>
       <Route path="contact" component={Contact}/>
       <Route path="code"    component={Code}/>
-      <Route path="about"   component={About}/>
       <Route path="music"   component={Music}/>
       <Route path="posts/:year/:month/:day/:name" component={Show}/>
     </Route>

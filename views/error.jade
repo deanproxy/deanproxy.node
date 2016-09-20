@@ -1,6 +1,34 @@
-extends layout
-
-block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+if status == 404
+  extends layout
+  block content
+    div(class="hoverbox errors")
+      img(src="/images/404.jpg")
+      h1 not found.
+      p you came to the wrong place. this page was not found.
+else
+  html
+  head
+    title something went wrong... - [deanproxy]
+    style.
+      .hoverbox {
+        border-radius: 5px;
+        box-shadow: 2px 3px 8px #333;
+        background-color: #fff;
+      }
+      .errors {
+        text-align: center;
+        background: white;
+        border: 1px solid #ccc;
+        width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 100px;
+        padding:  20px;
+      }
+  body
+    div(class="hoverbox errors")
+      img(src="/images/500.jpg")
+      h1 Good news everyone!
+      p Something went wrong. The site took a jump off of a cliff. There was carnage.
+        |It was probably your fault, but I'll look into it anyway.  Try hitting your
+        |browsers back button to get back to where you were.

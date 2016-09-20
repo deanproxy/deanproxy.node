@@ -8,6 +8,10 @@ html
     link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
     link(rel='stylesheet', href='/stylesheets/bootstrap-social.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/styles/default.min.css")
+    link(rel="stylesheet", href="/stylesheets/atom-one-dark.css")
+    
+    script(src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/highlight.min.js")
   body
     div(class="nav navbar-default navbar-static-top", role="navigation")
       div(class="container-fluid")
@@ -29,8 +33,6 @@ html
             li
               a(href="/music", class="bs-navbar-links") music
             li
-              a(href="/about", class="bs-navbar-links") about
-            li
               a(href="/contact", class="bs-navbar-links") contact
     block content
     script(src='/javascripts/bundle.js')
@@ -46,4 +48,28 @@ html
           navbar.className = navbar.className.replace('in', '');
         });
       }
+      hljs.initHighlightingOnLoad();
       
+    footer(class="alert alert-warning")
+      div(class='biopic')
+        img(src='/images/biopic.png')
+        p Hello. my name is Dean. I don't blog much but every now and then I get something I want to talk about.
+          |I have a passion for coding. I love to learn new ways to do things. I do a lot of mountain biking.
+          |I also play guitar and watch a lot of TV.  Welcome.
+        
+      div(class="footer-nav")
+        nav
+          ul
+            li
+              a(href="/posts") posts
+            li
+              a(href="/code") code
+            li
+              a(href="/music") music
+            li
+              a(href="/contact") contact
+            li
+              a(href='/posts/rss')
+                span(class='fa fa-rss')
+        p &copy; 2016. meow meow meow. rawr. yeah.
+          

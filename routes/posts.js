@@ -1,7 +1,7 @@
 const express = require('express');
 const Post = require('../models/post');
 const marked = require('marked');
-const parallel = require('async/parallel');
+const rss = require('rss');
 
 const shared = require('./shared');
 
@@ -36,7 +36,7 @@ router.get('/', (req, res) => {
     };
     if (req.accepts('html')) {
       res.render('index', {
-        react: ReactDOM.renderToString(IndexElement(obj)), 
+        react: ReactDOM.renderToString(IndexElement(obj)),
         state: JSON.stringify(obj)
       });
     } else {
@@ -45,6 +45,27 @@ router.get('/', (req, res) => {
   }).catch(response => {
     console.log(response);
     throw response;
+  });
+});
+
+router.get('/rss', (req, res) => {
+  Post.find({}, (err, posts) => {
+    if (err) {
+      console.log(err);
+      res.sendstatus(500);
+      return;
+    }
+    const feed = new rss();
+    posts.forEach(post => {
+      feed.item({
+        title: post.title,
+        description: marked(post.content),
+        url: `https://deanproxy.com${post.urlPath}`,
+        date: post.createdAt
+      });
+    });
+    res.set('Content-Type', 'text/xml');
+    res.send(feed.xml());
   });
 });
 
