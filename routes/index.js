@@ -10,7 +10,6 @@ const shared = require('./shared');
 
 const Login = require('../public/javascripts/react/login').default;
 const Code  = require('../public/javascripts/react/code').default;
-const About = require('../public/javascripts/react/about').default;
 const Music = require('../public/javascripts/react/music').default;
 const Contact = require('../public/javascripts/react/contact').default;
 const Edit = require('../public/javascripts/react/edit').default;
@@ -18,7 +17,6 @@ const AdminIndex = require('../public/javascripts/react/admin-index').default;
 
 const LoginElement = React.createFactory(Login);
 const CodeElement = React.createFactory(Code);
-const AboutElement = React.createFactory(About);
 const MusicElement = React.createFactory(Music);
 const ContactElement = React.createFactory(Contact);
 const AdminIndexElement = React.createFactory(AdminIndex);
@@ -33,9 +31,6 @@ router.get('/code', (req, res) => {
 });
 router.get('/music', (req, res) => {
   res.render('index', {react: ReactDOM.renderToString(MusicElement())});
-});
-router.get('/about', (req, res) => {
-  res.render('index', {react: ReactDOM.renderToString(AboutElement())});
 });
 router.get('/contact', (req, res) => {
   res.render('index', {react: ReactDOM.renderToString(ContactElement())});
