@@ -136,26 +136,9 @@ router.get('/:year/:month/:day/:name', (req, res) => {
     } else {
       /* get the previous and next posts */
       const p = post.toObject();
-      Promise.all([
-        () => {
-          return post.next(
-            (err, response) => {
-              if (response) {
-                p.next = response[response.length-1];
-              }
-            }
-          );
-        },
-        () => {
-          return post.previous(
-            (err, response) => {
-              if (response) {
-                p.previous = response;
-              }
-            }
-          );
-        }
-      ]).then((results) => {
+      Promise.all([post.next(), post.previous()]).then(results => {
+        p.next = results[0];
+        p.previous = results[1];
         if (req.accepts('html')) {
           res.render('index', {
             react: ReactDOM.renderToString(ShowElement(p)),
@@ -164,6 +147,9 @@ router.get('/:year/:month/:day/:name', (req, res) => {
         } else {
           res.json(p);
         }
+      }).catch(err => {
+        console.log(err);
+        res.sendStatus(500);
       });
     }
   });

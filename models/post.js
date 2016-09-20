@@ -12,13 +12,29 @@ const PostSchema = new Schema({
   commentsDisabled: { type: Boolean, default: true },
 });
 
-PostSchema.methods.previous = function(callback) {
-  return this.model('Post')
-    .findOne({createdAt: { $gt: this.createdAt }}, null, {sort: 'createdAt'}, callback);
+PostSchema.methods.previous = function() {
+  return new Promise((res, rej) => {
+    this.model('Post')
+      .findOne({createdAt: { $gt: this.createdAt }}, null, {sort: 'createdAt'}, (err, post) => {
+        if (err) {
+          rej(err);
+        } else {
+          res(post);
+        }
+      });
+  });
 }
-PostSchema.methods.next = function(callback) {
-  return this.model('Post')
-    .findOne({createdAt: { $lt: this.createdAt }}, null, {sort: {createdAt:-1}}, callback);
+PostSchema.methods.next = function() {
+  return new Promise((res, rej) => {
+    this.model('Post')
+      .findOne({createdAt: { $lt: this.createdAt }}, null, {sort: {createdAt:-1}}, (err, post) => {
+        if (err) {
+          rej(err);
+        } else {
+          res(post);
+        }
+      });
+  });
 }
 PostSchema.methods.urlPath = function() {
   const m = moment(this.createdAt);
