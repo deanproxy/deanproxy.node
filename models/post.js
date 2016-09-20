@@ -13,11 +13,11 @@ const PostSchema = new Schema({
 
 PostSchema.methods.previous = function(callback) {
   return this.model('Post')
-    .find({createdAt: { $gt: post.createdAt }}, 'title', {sort: {createdAt:-1}}, callback);
+    .find({createdAt: { $gt: this.createdAt }}, 'title', {sort: {createdAt:-1}}, callback);
 }
 PostSchema.methods.next = function(callback) {
   return this.model('Post')
-    .findOne({createdAt: { $lt: post.createdAt }}, 'title', {sort: {createdAt:-1}}, callback);
+    .findOne({createdAt: { $lt: this.createdAt }}, 'title', {sort: {createdAt:-1}}, callback);
 }
 
 const Post = mongoose.model('Post', PostSchema);
