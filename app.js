@@ -117,6 +117,7 @@ app.use(function(req, res, next) {
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
+    console.log(`Error ${err.status}: ${err.message}`);
     res.render('error', {
       status: err.status,
       message: err.message,
@@ -131,7 +132,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error', {
     status: err.status,
-    message: err.message,
     error: {}
   });
 });

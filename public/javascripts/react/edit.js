@@ -7,6 +7,14 @@ import Alert from './alert';
 class Edit extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      post: {
+        title: '',
+        content: '',
+        tags: []
+      }
+    }
     this.close = this.close.bind(this);
     this.save = this.save.bind(this);
     this.change = this.change.bind(this);
@@ -28,13 +36,17 @@ class Edit extends React.Component {
     this.setState({post: post});
   }
 
+  _saveCallback(response) {
+
+  }
+
   save(evt) {
     evt.preventDefault();
     let api = ApiTypes.ALL_POSTS;
-    let method  = ApiHandler.post;
+    let method  = ApiHandler.post.bind(ApiHandler);
     if (this.state.post._id) {
       api = ApiTypes.SINGLE_POST.replace(':id', this.state.post._id);
-      method = ApiHandler.put;
+      method = ApiHandler.put.bind(ApiHandler);
     } else {
       /* if this is a new post, we don't want to submit the _id attribute */
       delete this.state.post._id;
@@ -62,14 +74,20 @@ class Edit extends React.Component {
       preview.innerHTML = marked(content.value);
     }
     this.interval = setInterval(preview, 3000);
+    if (window.__PRELOADED_STATE__) {
+      this.state = window.__PRELOADED_STATE__;
+      this.setState(this.state);
+    }
   }
 
   render() {
-    this.state = this.props;
-    if (typeof window !== 'undefined') {
-      this.state = window.__PRELOADED_STATE__;
+    if (typeof window === 'undefined') {
+      this.state = this.props;
     }
-    const tags = this.state.post.tags.join(',');
+    let tags = '';
+    if (this.state) {
+      tags = this.state.post.tags.join(',');
+    }
     return (
       <div className="edit">
         <form onSubmit={this.save}>

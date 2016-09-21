@@ -67,7 +67,14 @@ router.get('/admin', shared.authMiddleware, (req, res) => {
   });
 });
 router.get('/admin/new', shared.authMiddleware, (req, res) => {
-  res.render('index', {react: ReactDOM.renderToString(EditElement())});
+  const post = {
+    post: {
+      title: '',
+      content: '',
+      tags: []
+    }
+  }
+  res.render('index', {react: ReactDOM.renderToString(EditElement(post))});
 });
 router.get('/admin/edit/:id', shared.authMiddleware, (req, res) => {
   Post.findById(req.params.id, (err, post) => {

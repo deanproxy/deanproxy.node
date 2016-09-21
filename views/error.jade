@@ -5,6 +5,10 @@ if status == 404
       img(src="/images/404.jpg")
       h1 not found.
       p you came to the wrong place. this page was not found.
+      if message
+        h3 Error Message
+        p #{message}
+        p #{error.stack}
 else
   html
   head
@@ -32,3 +36,7 @@ else
       p Something went wrong. The site took a jump off of a cliff. There was carnage.
         |It was probably your fault, but I'll look into it anyway.  Try hitting your
         |browsers back button to get back to where you were.
+      if message
+        h3 Error Message
+        p #{message}
+        p #{error.stack}

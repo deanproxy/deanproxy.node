@@ -13,63 +13,65 @@ html
     
     script(src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/highlight.min.js")
   body
-    div(class="nav navbar-default navbar-static-top", role="navigation")
-      div(class="container-fluid")
-        div(class="navbar-header")
-          button(type="button", class="navbar-toggle collapsed",
-            data-toggle="collapse", data-target="#meow-navbar-collapse")
-            span(class="sr-only")
-              Toggle navigation
-            span(class="icon-bar")
-            span(class="icon-bar")
-            span(class="icon-bar")
-          a(href="/", class="navbar-brand")
-            em dean
-            |proxy
-        nav(id="meow-navbar-collapse", class="collapse navbar-collapse", aria-expanded="false")
-          ul(class="nav navbar-nav")
-            li 
-              a(href="/code", class="bs-navbar-links") code
-            li
-              a(href="/music", class="bs-navbar-links") music
-            li
-              a(href="/contact", class="bs-navbar-links") contact
-    block content
-    script(src='/javascripts/bundle.js')
-    script.
-      /** bootstrap.native may have a bug where it won't close the navbar when
-        * you supply the data-toggle/data-target to an anchor tag. So this is
-        * a small workaround to fix that. */
-      var navbar = document.getElementById('meow-navbar-collapse');
-      var links = document.getElementsByClassName('bs-navbar-links');
-      for (var i=0; i < links.length; i++) {
-        var l = links[i];
-        l.addEventListener('click', function(e) {
-          navbar.className = navbar.className.replace('in', '');
-        });
-      }
-      hljs.initHighlightingOnLoad();
-      
-    footer(class="alert alert-warning")
-      div(class='biopic')
-        img(src='/images/biopic.png')
-        p Hello. my name is Dean. I don't blog much but every now and then I get something I want to talk about.
-          |I have a passion for coding. I love to learn new ways to do things. I do a lot of mountain biking.
-          |I also play guitar and watch a lot of TV.  Welcome.
+    div(id="container")
+      div(class="nav navbar-default navbar-static-top", role="navigation")
+        div(class="container-fluid")
+          div(class="navbar-header")
+            button(type="button", class="navbar-toggle collapsed",
+              data-toggle="collapse", data-target="#meow-navbar-collapse")
+              span(class="sr-only")
+                Toggle navigation
+              span(class="icon-bar")
+              span(class="icon-bar")
+              span(class="icon-bar")
+            a(href="/", class="navbar-brand")
+              em dean
+              |proxy
+          nav(id="meow-navbar-collapse", class="collapse navbar-collapse", aria-expanded="false")
+            ul(class="nav navbar-nav")
+              li 
+                a(href="/code", class="bs-navbar-links") code
+              li
+                a(href="/music", class="bs-navbar-links") music
+              li
+                a(href="/contact", class="bs-navbar-links") contact
+                
+      block content
+      script(src='/javascripts/bundle.js')
+      script.
+        /** bootstrap.native may have a bug where it won't close the navbar when
+          * you supply the data-toggle/data-target to an anchor tag. So this is
+          * a small workaround to fix that. */
+        var navbar = document.getElementById('meow-navbar-collapse');
+        var links = document.getElementsByClassName('bs-navbar-links');
+        for (var i=0; i < links.length; i++) {
+          var l = links[i];
+          l.addEventListener('click', function(e) {
+            navbar.className = navbar.className.replace('in', '');
+          });
+        }
+        hljs.initHighlightingOnLoad();
         
-      div(class="footer-nav")
-        nav
-          ul
-            li
-              a(href="/posts") posts
-            li
-              a(href="/code") code
-            li
-              a(href="/music") music
-            li
-              a(href="/contact") contact
-            li
-              a(href='/posts/rss')
-                span(class='fa fa-rss')
-        p &copy; 2016. meow meow meow. rawr. yeah.
+      footer(class="alert alert-warning")
+        div(class='biopic')
+          img(src='/images/biopic.png')
+          p Hello. my name is Dean. I don't blog much but every now and then I get something I want to talk about.
+            |I have a passion for coding. I love to learn new ways to do things. I do a lot of mountain biking.
+            |I also play guitar and watch a lot of TV.  Welcome.
+          
+        div(class="footer-nav")
+          nav
+            ul
+              li
+                a(href="/posts") posts
+              li
+                a(href="/code") code
+              li
+                a(href="/music") music
+              li
+                a(href="/contact") contact
+              li
+                a(href='/posts/rss')
+                  span(class='fa fa-rss')
+          p &copy; 2016. meow meow meow. rawr. yeah.
           

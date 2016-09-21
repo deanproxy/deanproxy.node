@@ -1,6 +1,9 @@
 $main-color: #29abe0;
 $danger-color: #d9534f;
 
+html, body {
+  height: 100%;
+}
 p {
   margin: inherit;
 }
@@ -11,8 +14,13 @@ a {
   }
 }
 
+#container {
+  min-height: 100%;
+  position: relative;
+}
 .main-content {
   margin: 0 15%;
+  padding: 20px 20px 280px 20px;
 }
 
 input, textarea {
@@ -61,10 +69,6 @@ section {
   }
 }
 
-.main-content {
-  padding: 20px;
-}
-
 .login {
   max-width: 400px;
   .btn {
@@ -90,6 +94,19 @@ section {
     right: 8px;
     top: 10px;
     color: #aaa;
+  }
+}
+.form-group {
+  position: relative;
+  span {
+    position: absolute;
+    font-size: 1.4em;
+    right: 8px;
+    top: 12px;
+    color: #aaa;
+  }
+  input {
+    padding-right: 30px;
   }
 }
 
@@ -220,6 +237,7 @@ section {
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+      text-align: left;
       span.fa {
         margin-right: 10px;
         font-size: 1.1em;
@@ -228,6 +246,7 @@ section {
     .next-link {
       float: right;
       width: 50%;
+      text-align: right;
       span.fa {
         margin-left: 10px;
         font-size: 1.1em;
@@ -298,7 +317,10 @@ section {
   font-size: 1.4em;
 }
 
-body > footer {
+#container > footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
   &.alert {
     border-radius: 0;
     margin-bottom: 0;
@@ -374,6 +396,7 @@ body > footer {
 @media(max-width:768px) {
   .main-content{
     margin: 0;
+    padding-bottom: 230px;
   }
   .post footer a span.link-text {
     width: 80%;
@@ -383,27 +406,31 @@ body > footer {
       clear: both;
     }
   }
-  body > footer {
+  #container > footer {
     .biopic {
       margin: 0 0;
       img {
-        width: 100px;
-        height: 102px;
+        width: 75px;
+        height: 75px;
       }
       p {
         font-size: 1.0em;
         margin: 0 0 0 15px;
-        width: 65%;
+        width: 72%;
       }
     }
     .footer-nav {
       margin-top: 10px;
-      width: 355px;
+      width: 100%;
       nav {
-        width: 100%;
+        margin: 0 auto;
+        width: 260px;
         font-size: 1.0em;
         ul {
           margin: 0 auto;
+          li:after {
+            margin: 0 10px;
+          }
         }
       }
       p {

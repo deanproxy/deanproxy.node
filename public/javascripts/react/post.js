@@ -53,7 +53,7 @@ class Post extends React.Component {
 
       footer = <footer>{prev}{next}</footer>;
     } else {
-      content = post.content.match(/(.*\.\n){1,30}/)[0] + ` [[more...]](${currentTitle})`;
+      content = post.content.match(/(?:.*(?:[\r\n]+)){0,2}/)[0] + ` [[more...]](${currentTitle})`;
     }
 
     /* NOTE: for the meantime, comments are disabled on all posts. */
