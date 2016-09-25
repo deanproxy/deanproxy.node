@@ -12,6 +12,7 @@ class Edit extends React.Component {
       post: {
         title: '',
         content: '',
+        commentsDisabled: false,
         tags: []
       }
     }
@@ -30,14 +31,13 @@ class Edit extends React.Component {
     const post = this.state.post;
     if (evt.target.name === 'tags') {
       post[evt.target.name] = evt.target.value.split(',').map(tag => tag.trim());
+    } else if (evt.target.name === 'commentsDisabled') {
+      /* Toggles the state */
+      post[evt.target.name] = !post[evt.target.name];
     } else {
       post[evt.target.name] = evt.target.value;
     }
     this.setState({post: post});
-  }
-
-  _saveCallback(response) {
-
   }
 
   save(evt) {
@@ -99,7 +99,7 @@ class Edit extends React.Component {
             </li>
             <li>
               <textarea name="content" onChange={this.change} id="content"
-                value={this.state.post.content} placeholder="Content" required></textarea>
+                value={this.state.post.content} placeholder="Content" required />
             </li>
             <li>
               <input type="text" name="tags" onChange={this.change}
@@ -107,8 +107,8 @@ class Edit extends React.Component {
             </li>
             <li>
               <label>Disabled Comments</label>
-              <input type="checkbox" name="disableComments" onChange={this.change}
-                value={this.state.post.disableComments}/>
+              <input type="checkbox" name="commentsDisabled" onClick={this.change}
+                checked={this.state.post.commentsDisabled}/>
             </li>
             <li>
               <div id="preview" className="preview"></div>

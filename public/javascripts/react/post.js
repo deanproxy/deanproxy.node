@@ -18,7 +18,9 @@ class Post extends React.Component {
 
     const createdAt = moment(post.createdAt).format();
     const createdAtEnglish = moment(post.createdAt).format("dddd, MMMM Do YYYY");
+    const currentTitle = this._makeUrl(post.title, post.createdAt);
 
+    let disqus = '';
     if (this.props.post.tags) {
       tags = this.props.post.tags.map((tag,idx) => {
         let comma = '';
@@ -30,7 +32,6 @@ class Post extends React.Component {
     }
 
     let footer = '';
-    const currentTitle = this._makeUrl(post.title, post.createdAt);
     let content = post.content;
     if (!this.props.summarize) {
       let prev='', next='';
@@ -52,6 +53,24 @@ class Post extends React.Component {
       }
 
       footer = <footer>{prev}{next}</footer>;
+      if (!post.commentsDisabled) {
+        disqus = `
+          <div id="disqus_thread"></div>
+          <script>
+            var disqus_config = function () {
+                this.page.url = "https://deanproxy.com${currentTitle}",
+                this.page.identifier = "${post._id}"
+            };
+            (function() { // DONT EDIT BELOW THIS LINE
+                var d = document, s = d.createElement("script");
+                s.src = "//deanproxy.disqus.com/embed.js";
+                s.setAttribute("data-timestamp", +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+          </script>
+          <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        `;
+      }
     } else {
       content = post.content.match(/(?:.*(?:[\r\n]+)){0,2}/)[0] + ` [[more...]](${currentTitle})`;
     }
@@ -67,6 +86,7 @@ class Post extends React.Component {
           <section dangerouslySetInnerHTML={{__html: marked(content)}}/>
           <div className="tags"><span className="fa fa-tag"></span> {tags}</div>
           {footer}
+          <div className="disqus" dangerouslySetInnerHTML={{__html: disqus}}/>
         </article>
       </div>
     );
