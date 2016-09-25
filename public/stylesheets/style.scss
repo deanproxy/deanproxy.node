@@ -56,6 +56,9 @@ form {
 
 section {
   font-size: 1.5em;
+  blockquote, code, ul {
+    margin-top: 10px;
+  }
 }
 
 .nav {
