@@ -1,6 +1,6 @@
 import React from 'react';
 import {hydrate, render} from 'react-dom';
-import {BrowserRouter as Router, IndexRoute, Route, Switch} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 
 import Layout from './layout';
 import Login from './login';
