@@ -1,6 +1,6 @@
 import React from 'react';
 
-class Paginate extends React.Component {
+export default class Paginate extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -34,4 +34,3 @@ class Paginate extends React.Component {
   }
 }
 
-export default Paginate;

@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom';
 import Post from './post';
 import Paginate from './paginate';
 
-class Index extends React.Component {
+export default class Index extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -31,4 +31,3 @@ class Index extends React.Component {
   }
 }
 
-export default Index;

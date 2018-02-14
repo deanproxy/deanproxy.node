@@ -46,6 +46,7 @@
     "vinyl-source-stream": "^2.0.0"
   },
   "devDependencies": {
+    "babel-plugin-transform-es2015-modules-amd": "^6.24.1",
     "chai": "^4.1.2",
     "chai-http": "^3.0.0",
     "cheerio": "^1.0.0-rc.2",
