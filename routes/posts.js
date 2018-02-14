@@ -16,6 +16,10 @@ const router = express.Router();
 const IndexElement = React.createFactory(Index);
 const ShowElement = React.createFactory(Show);
 
+marked.setOptions({
+   sanitize: true
+});
+
 router.get('/', (req, res) => {
   var options = {
     skip: 0,

@@ -2,6 +2,10 @@ import React from 'react';
 import moment from 'moment';
 import marked from 'marked';
 
+marked.setOptions({
+   sanitize: true
+});
+
 class Post extends React.Component {
   _makeUrl(title, createdAt) {
     if (!title) {
@@ -75,7 +79,6 @@ class Post extends React.Component {
       content = post.content.match(/(?:.*(?:[\r\n]+)){0,2}/)[0] + ` [[more...]](${currentTitle})`;
     }
 
-    /* NOTE: for the meantime, comments are disabled on all posts. */
     return (
       <div className="post">
         <article id={post._id}>

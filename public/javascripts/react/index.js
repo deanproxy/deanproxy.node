@@ -1,6 +1,6 @@
 import React from 'react';
 import {ApiHandler, ApiTypes} from './data';
-import {Link} from 'react-router';
+import {Link} from 'react-router-dom';
 import Post from './post';
 import Paginate from './paginate';
 

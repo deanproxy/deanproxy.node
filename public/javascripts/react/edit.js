@@ -4,6 +4,10 @@ import marked from 'marked';
 import {ApiTypes, ApiHandler} from './data';
 import Alert from './alert';
 
+marked.setOptions({
+   sanitize: true
+});
+
 class Edit extends React.Component {
   constructor(props) {
     super(props);
@@ -56,7 +60,7 @@ class Edit extends React.Component {
       clearInterval(this.interval);
       window.location = '/admin';
     }).catch(response => {
-      ReactDOM.render(<Alert type='danger' header='Error' message='Someting odd happened.'/>,
+      ReactDOM.hydrate(<Alert type='danger' header='Error' message='Someting odd happened.'/>,
         document.getElementById('react-alert'));
     });
   }

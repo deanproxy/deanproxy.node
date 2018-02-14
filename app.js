@@ -15,7 +15,8 @@ var passport = require('passport');
 var authConfig = require('./config/auth');
 var GithubStrategy = require('passport-github').Strategy;
 var session = require('express-session');
-var MongoStore = require('express-session-mongo');
+var MongoStore = require('connect-mongo')(session);
+var mongoSanitize = require('express-mongo-sanitize');
 
 var routes = require('./routes/index');
 var posts = require('./routes/posts');
@@ -59,10 +60,12 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(mongoSanitize());
 app.use(express.static(path.join(__dirname, 'public')));
 
 var sessionStore = new MongoStore({
-  db: 'deanproxy'
+  db: 'deanproxy',
+  mongooseConnection: mongoose.connection
 });
 
 app.use(session({
