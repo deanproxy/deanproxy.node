@@ -5,4 +5,4 @@ bundle.js.map
 style.css
 *.log
 dump
-
+package-lock.json

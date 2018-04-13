@@ -1,0 +1,9 @@
+{
+	"name": "deanproxy.com",
+	"script": "bin/www",
+	"instances": 10,
+	"exec_mode": "cluster_mode",
+	"env": {
+		"NODE_ENV": "production"
+	}
+}

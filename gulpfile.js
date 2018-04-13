@@ -28,7 +28,9 @@ var opts = assign({}, watchify.args, {
   debug: true
 });
 var watchBundle = watchify(browserify(opts))
-  .transform(babelify, {presets: ['es2015', 'react']})
+  .transform(babelify, {
+     presets: ['es2015', 'react']
+  })
   .on('update', watch)
   .on('log', gutil.log);
 
@@ -53,7 +55,9 @@ function build() {
   });
 
   buildSass();
-  return b.transform(babelify, {presets: ['es2015', 'react']})
+  return b.transform(babelify, {
+     presets: ['es2015', 'react'],
+  })
     .bundle()
     .on('error', gutil.log.bind(gutil, "Browserify Error"))
     .pipe(source('bundle.js'))

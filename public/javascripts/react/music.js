@@ -77,6 +77,6 @@ const Music = (props) => {
   		</article>
   	</div>
   );
-}
+};
 
 export default Music;

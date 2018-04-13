@@ -4,7 +4,7 @@ import Mime from 'rest/interceptor/mime';
 import ErrorCode from 'rest/interceptor/errorCode';
 import moment from 'moment';
 
-class Code extends React.Component {
+export default class Code extends React.Component {
   constructor() {
     super();
     this.rest = Rest.wrap(Mime, {mime: 'application/json'}).wrap(ErrorCode);
@@ -129,4 +129,3 @@ class Code extends React.Component {
   }
 }
 
-export default Code;

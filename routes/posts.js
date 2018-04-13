@@ -16,6 +16,10 @@ const router = express.Router();
 const IndexElement = React.createFactory(Index);
 const ShowElement = React.createFactory(Show);
 
+marked.setOptions({
+   sanitize: true
+});
+
 router.get('/', (req, res) => {
   var options = {
     skip: 0,
@@ -23,10 +27,10 @@ router.get('/', (req, res) => {
   };
 
   if (req.query.limit) {
-    options.limit = req.query.limit;
+    options.limit = parseInt(req.query.limit, 10);
   }
   if (req.query.skip) {
-    options.skip = req.query.skip;
+    options.skip = parseInt(req.query.skip, 10);
   }
 
   shared.queryPosts(options).then(response => {

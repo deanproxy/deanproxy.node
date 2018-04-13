@@ -3,7 +3,7 @@ import Mime from 'rest/interceptor/mime';
 import ErrorCode from 'rest/interceptor/errorCode';
 import _ from 'lodash';
 
-class ApiClass {
+export class ApiClass {
   constructor() {
     this.rest = Rest.wrap(Mime, {mime: 'application/json'}).wrap(ErrorCode);
     this.apis = [];
@@ -58,7 +58,7 @@ class ApiClass {
 
 }
 
-const ApiTypes = {
+export const ApiTypes = {
   ALL_POSTS: '/posts',
   LATEST_POST: '/posts/latest',
   SINGLE_POST: '/posts/:id',
@@ -68,5 +68,4 @@ const ApiTypes = {
   POSTS_BY_TAG: '/posts/tags/:tag'
 }
 
-const ApiHandler = new ApiClass();
-export {ApiTypes, ApiHandler};
+export const ApiHandler = new ApiClass();

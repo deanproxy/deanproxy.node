@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {ApiTypes, ApiHandler} from './data';
 import Modal from './modal';
-import Bootstrap from 'bootstrap.native';
 import marked from 'marked';
 import Paginate from './paginate';
 import Alert from './alert';
@@ -22,7 +21,7 @@ class AdminIndex extends React.Component {
     ApiHandler.delete(api).then(response => {
       window.location = '/admin';
     }).catch(response => {
-      ReactDOM.render(<Alert type='danger' header='Error' message='Did not delete that post.'/>,
+      ReactDOM.hydrate(<Alert type='danger' header='Error' message='Did not delete that post.'/>,
         document.getElementById('react-alert'));
     });
   }

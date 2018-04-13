@@ -23,10 +23,10 @@ class Contact extends React.Component {
       .then(response => {
         from.value = '';
         message.value = '';
-        ReactDOM.render(<Alert type="success" header="Thanks!" message="I received your e-mail. Cross your fingers it doesn't wind up in spam."/>,
+        ReactDOM.hydrate(<Alert type="success" header="Thanks!" message="I received your e-mail. Cross your fingers it doesn't wind up in spam."/>,
           document.getElementById('react-alert'));
       }).catch(response => {
-        ReactDOM.render(<Alert type="danger" header="Sorry" message="An error occured while trying to send your message."/>,
+        ReactDOM.hydrate(<Alert type="danger" header="Sorry" message="An error occured while trying to send your message."/>,
           document.getElementById('react-alert'));
       });
   }
