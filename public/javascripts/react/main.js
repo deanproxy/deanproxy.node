@@ -15,8 +15,8 @@ import Edit from './edit';
 hydrate((
   <Router>
    <Switch>
-      <Route path="/" component={Index}/>
-      <Route path="/posts" component={Index}/>
+      <Route exact path="/" component={Index}/>
+      <Route exact path="/posts" component={Index}/>
       <Route path="/posts/tags/:tag" component={Index}/>
       <Route path="/posts/:year/:month/:day/:name" component={Show}/>
       <Route path="/login" component={Login}/>
